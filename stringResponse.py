@@ -1,7 +1,8 @@
 from psychopy import event
+import numpy as np
 
-def collectStringResponse(numCharsWanted,respPrompt,myWin,responseDebug=False): 
-    '''respPrompt should be a stimulus with a draw() method
+def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSound,autopilot,responseDebug=False): 
+    '''respPromptStim should be a stimulus with a draw() method
     '''
     event.clearEvents() #clear the keyboard buffer
     expStop = False
@@ -14,11 +15,11 @@ def collectStringResponse(numCharsWanted,respPrompt,myWin,responseDebug=False):
         noResponseYet=True
         thisResponse=''
         while noResponseYet: #collect one response
-           respPrompt.draw()
+           respPromptStim.draw()
            #respStr= 'Y'
            #print 'respStr = ', respStr, ' type=',type(respStr) #debugOFF
-           respText.setText(respStr,log=False)
-           respText.draw()
+           respStim.setText(respStr,log=False)
+           respStim.draw()
            myWin.flip()
            for key in event.getKeys():       #check if pressed abort-type key
                   key = key.upper()
@@ -39,15 +40,15 @@ def collectStringResponse(numCharsWanted,respPrompt,myWin,responseDebug=False):
                       if key in ['ESCAPE']:
                             expStop = True
         #click to provide feedback that response collected. Eventually, draw on screen
-        click.play()
+        clickSound.play()
         if thisResponse or autopilot:
             responses.append(thisResponse)
             numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
         respStr = ''.join(responses) #converts list of characters (responses) into string
         #print 'responses=',responses,' respStr = ', respStr #debugOFF
-        respText.setText(respStr,log=False); respText.draw(); myWin.flip() #draw again, otherwise won't draw the last key
+        respStim.setText(respStr,log=False); respStim.draw(); myWin.flip() #draw again, otherwise won't draw the last key
         
-    responsesAutopilot = np.array(   numRespsWanted*list([('A')])        )
+    responsesAutopilot = np.array(   numCharsWanted*list([('A')])        )
     responses=np.array( responses )
     #print 'responses=', responses,' responsesAutopilot=', responsesAutopilot #debugOFF
     return expStop,passThisTrial,responses,responsesAutopilot
@@ -60,9 +61,19 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     msg.draw()
     window.flip()
     autoLogging=False
-    respPrompt = visual.TextStim(window,pos=(0, -.9),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
+    autopilot = False
+    #create click sound for keyboard
+    try:
+        clickSound=sound.Sound('406__tictacshutup__click-1-d.wav')
+    except:
+        logging.warn('Could not load the desired click sound file, instead using manually created inferior click')
+        clickSound=sound.Sound('D',octave=4, sampleRate=22050, secs=0.015, bits=8)
+    
+    respPromptStim = visual.TextStim(window,pos=(0, -.9),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
+    respStim = visual.TextStim(window,pos=(0,0),colorSpace='rgb',color=(1,1,0),alignHoriz='center', alignVert='center',height=.16,units='norm',autoLog=autoLogging)
 
     responseDebug=False; responses = list(); responsesAutopilot = list();
     numCharsWanted = 2
     expStop,passThisTrial,responses,responsesAutopilot = \
-                collectStringResponse(numCharsWanted,respPrompt,window,responseDebug=True)
+                collectStringResponse(numCharsWanted,respPromptStim,respStim,window,clickSound,autopilot,responseDebug=True)
+    print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
