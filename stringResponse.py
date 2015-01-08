@@ -3,33 +3,38 @@ import numpy as np
 import string
 from copy import deepcopy
 
+def drawString(responses,respStim):
+        respStr = ''.join(responses) #converts list of characters (responses) into string
+        #print 'responses=',responses,' respStr = ', respStr #debugOFF
+        respStim.setText(respStr,log=False)
+        respStim.draw(); 
+        
 def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,requireAcceptance,autopilot,responseDebug=False): 
     '''respPromptStim should be a stimulus with a draw() method
     '''
     event.clearEvents() #clear the keyboard buffer
     expStop = False
     passThisTrial = False
-    respStr = ''
     responses=[]
     numResponses = 0
     accepted = True
     if requireAcceptance: #require user to hit ENTER to finalize response
         accepted = False
 
-    while (numResponses < numCharsWanted and not expStop) or not accepted:
+    while not expStop and numResponses < numCharsWanted and not accepted:
+    # (numResponses < numCharsWanted and not expStop) or not accepted:
+    #while (numResponses < numCharsWanted and not expStop) or not accepted:
         print 'numResponses=', numResponses #debugOFF
         print 'expStop=',expStop
         print 'accepted=',accepted
         noResponseYet = True
         thisResponse=''
-        while noResponseYet: #collect one response
+        while noResponseYet: #loop until a valid key is hit. 
            respPromptStim.draw()
-           #respStr= 'Y'
-           #print 'respStr = ', respStr, ' type=',type(respStr) #debugOFF
-           respStim.setText(respStr,log=False)
-           respStim.draw()
+           drawString(responses,respStim)
            myWin.flip()
-           for key in event.getKeys():       #check if pressed abort-type key
+           for key in event.getKeys():       #check if pressed any key
+                  #Possible problem is that if user manages to hit more than one key between frame flips, it will be driven by the last one
                   key = key.upper()
                   thisResponse = key
                   if key in ['ESCAPE']:
@@ -47,21 +52,21 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
                       thisResponse = key
                       if key in ['ESCAPE']:
                             expStop = True
-        #Collected onre resopnse. Click to provide feedback that one response collected. Eventually, draw on screen
-        clickSound.play()
+        #Collected one response. Eventually, draw on screen
         if thisResponse or autopilot:
+            click = False
             if key in string.ascii_letters:
                 responses.append(thisResponse)
                 numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
+                click = True
             if key in ['BACKSPACE','DELETE']:
                 if len(responses) >0:
                     responses.pop()
                     numResponses -= 1
-        
-        respStr = ''.join(responses) #converts list of characters (responses) into string
-        #print 'responses=',responses,' respStr = ', respStr #debugOFF
-        respStim.setText(respStr,log=False); respStim.draw(); myWin.flip() #draw again, otherwise won't draw the last key
-        respStim.draw()
+            if click:
+                clickSound.play()
+        drawString(responses,respStim)
+        myWin.flip() #draw again, otherwise won't draw the last key
         
         if numResponses == numCharsWanted:  #ask participant to HIT ENTER TO ACCEPT
             waitingForAccept = True
@@ -80,9 +85,8 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
                         waitingForAccept = False
                         numResponses -= 1
                         responses.pop()
-                        respStr = ''.join(responses) #converts list of characters (responses) into string
-                        #print 'responses=',responses,' respStr = ', respStr #debugOFF
-                        respStim.setText(respStr,log=False); respStim.draw(); myWin.flip() #draw again, otherwise won't draw the last key
+                        drawString(responses,respStim)
+                        myWin.flip() #draw again, otherwise won't draw the last key
                 myWin.flip() #end of waitingForAccept loop
                 
     responsesAutopilot = np.array(   numCharsWanted*list([('A')])   )
