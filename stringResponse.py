@@ -1,5 +1,6 @@
 from psychopy import event
 import numpy as np
+import string
 
 def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSound,autopilot,responseDebug=False): 
     '''respPromptStim should be a stimulus with a draw() method
@@ -30,7 +31,7 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
 #                  if key in ['SPACE']: #observer opting out because think they moved their eyes
 #                      passThisTrial = True
 #                      noResponseYet = False
-                  if key in ['A', 'C', 'B', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'J', 'M', 'L', 'O', 'N', 'Q', 'P', 'S', 'R', 'U', 'T', 'W', 'V', 'Y', 'X', 'Z']:
+                  if key in string.ascii_letters or key in ['BACKSPACE','DELETE']:
                       noResponseYet = False
            if autopilot:
                noResponseYet = False
