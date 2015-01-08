@@ -16,7 +16,26 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
         accepted = False
     while numResponses < numCharsWanted and not accepted and not expStop:
         #print 'numResponses=', numResponses #debugOFF
-        noResponseYet=True
+        noResponseYet = True
+        if numResponses == numCharsWanted:  #ask participant to HIT ENTER TO ACCEPT
+            waitingForAccept = True
+            while waitingForAccept and not expStop:
+                acceptTextStim.draw()
+                respStim.draw()
+                for key in event.getkeys():
+                    key = key.upper()
+                    if key in ['ESCAPE']:
+                        expStop = True
+                        noResponseYet = False
+                    elif key in ['ENTER']:
+                        waitingForAccept = False
+                        noResponseYet = False
+                    elif key in ['BACKSPACE','DELETE']:
+                        waitingForAccept = False
+                        numResponses -= 1
+                        responses.pop()
+                myWin.flip() #end of waitingForAccept loop
+                    
         thisResponse=''
         while noResponseYet: #collect one response
            respPromptStim.draw()
@@ -24,8 +43,6 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
            #print 'respStr = ', respStr, ' type=',type(respStr) #debugOFF
            respStim.setText(respStr,log=False)
            respStim.draw()
-           if numResponses == numCharsWanted:
-            #ask participant to HIT ENTER TO ACCEPT
            myWin.flip()
            for key in event.getKeys():       #check if pressed abort-type key
                   key = key.upper()
@@ -60,7 +77,7 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
         #print 'responses=',responses,' respStr = ', respStr #debugOFF
         respStim.setText(respStr,log=False); respStim.draw(); myWin.flip() #draw again, otherwise won't draw the last key
         
-    responsesAutopilot = np.array(   numCharsWanted*list([('A')])        )
+    responsesAutopilot = np.array(   numCharsWanted*list([('A')])   )
     responses=np.array( responses )
     #print 'responses=', responses,' responsesAutopilot=', responsesAutopilot #debugOFF
     return expStop,passThisTrial,responses,responsesAutopilot
@@ -87,8 +104,8 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     responseDebug=False; responses = list(); responsesAutopilot = list();
     numCharsWanted = 4
     respPromptStim.setText('Enter your ' + str(numCharsWanted) + '-character response')
-
+    requireAcceptance = True
     expStop,passThisTrial,responses,responsesAutopilot = \
-                collectStringResponse(numCharsWanted,respPromptStim,respStim,window,clickSound,autopilot,responseDebug=True)
+                collectStringResponse(numCharsWanted,respPromptStim,respStim,window,clickSound,requireAcceptance,autopilot,responseDebug=True)
     print('responses=',responses)
     print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
