@@ -1,8 +1,9 @@
 from psychopy import event
 import numpy as np
 import string
+from copy import deepcopy
 
-def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSound,requireAcceptance,autopilot,responseDebug=False): 
+def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,requireAcceptance,autopilot,responseDebug=False): 
     '''respPromptStim should be a stimulus with a draw() method
     '''
     event.clearEvents() #clear the keyboard buffer
@@ -14,28 +15,12 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
     accepted = True
     if requireAcceptance: #require user to hit ENTER to finalize response
         accepted = False
-    while numResponses < numCharsWanted and not accepted and not expStop:
-        #print 'numResponses=', numResponses #debugOFF
+
+    while (numResponses < numCharsWanted and not expStop) or not accepted:
+        print 'numResponses=', numResponses #debugOFF
+        print 'expStop=',expStop
+        print 'accepted=',accepted
         noResponseYet = True
-        if numResponses == numCharsWanted:  #ask participant to HIT ENTER TO ACCEPT
-            waitingForAccept = True
-            while waitingForAccept and not expStop:
-                acceptTextStim.draw()
-                respStim.draw()
-                for key in event.getkeys():
-                    key = key.upper()
-                    if key in ['ESCAPE']:
-                        expStop = True
-                        noResponseYet = False
-                    elif key in ['ENTER']:
-                        waitingForAccept = False
-                        noResponseYet = False
-                    elif key in ['BACKSPACE','DELETE']:
-                        waitingForAccept = False
-                        numResponses -= 1
-                        responses.pop()
-                myWin.flip() #end of waitingForAccept loop
-                    
         thisResponse=''
         while noResponseYet: #collect one response
            respPromptStim.draw()
@@ -62,7 +47,7 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
                       thisResponse = key
                       if key in ['ESCAPE']:
                             expStop = True
-        #click to provide feedback that response collected. Eventually, draw on screen
+        #Collected onre resopnse. Click to provide feedback that one response collected. Eventually, draw on screen
         clickSound.play()
         if thisResponse or autopilot:
             if key in string.ascii_letters:
@@ -76,7 +61,30 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
         respStr = ''.join(responses) #converts list of characters (responses) into string
         #print 'responses=',responses,' respStr = ', respStr #debugOFF
         respStim.setText(respStr,log=False); respStim.draw(); myWin.flip() #draw again, otherwise won't draw the last key
+        respStim.draw()
         
+        if numResponses == numCharsWanted:  #ask participant to HIT ENTER TO ACCEPT
+            waitingForAccept = True
+            while waitingForAccept and not expStop:
+                acceptTextStim.draw()
+                respStim.draw()
+                for key in event.getKeys():
+                    key = key.upper()
+                    if key in ['ESCAPE']:
+                        expStop = True
+                        #noResponseYet = False
+                    elif key in ['ENTER','RETURN']:
+                        waitingForAccept = False
+                        accepted = True
+                    elif key in ['BACKSPACE','DELETE']:
+                        waitingForAccept = False
+                        numResponses -= 1
+                        responses.pop()
+                        respStr = ''.join(responses) #converts list of characters (responses) into string
+                        #print 'responses=',responses,' respStr = ', respStr #debugOFF
+                        respStim.setText(respStr,log=False); respStim.draw(); myWin.flip() #draw again, otherwise won't draw the last key
+                myWin.flip() #end of waitingForAccept loop
+                
     responsesAutopilot = np.array(   numCharsWanted*list([('A')])   )
     responses=np.array( responses )
     #print 'responses=', responses,' responsesAutopilot=', responsesAutopilot #debugOFF
@@ -98,7 +106,9 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
         logging.warn('Could not load the desired click sound file, instead using manually created inferior click')
         clickSound=sound.Sound('D',octave=4, sampleRate=22050, secs=0.015, bits=8)
     
-    respPromptStim = visual.TextStim(window,pos=(0, -.9),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
+    respPromptStim = visual.TextStim(window,pos=(0, -.7),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
+    acceptTextStim = visual.TextStim(window,pos=(0, -.8),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
+    acceptTextStim.setText('Hit ENTER to accept. Backspace to edit')
     respStim = visual.TextStim(window,pos=(0,0),colorSpace='rgb',color=(1,1,0),alignHoriz='center', alignVert='center',height=.16,units='norm',autoLog=autoLogging)
 
     responseDebug=False; responses = list(); responsesAutopilot = list();
@@ -106,6 +116,6 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     respPromptStim.setText('Enter your ' + str(numCharsWanted) + '-character response')
     requireAcceptance = True
     expStop,passThisTrial,responses,responsesAutopilot = \
-                collectStringResponse(numCharsWanted,respPromptStim,respStim,window,clickSound,requireAcceptance,autopilot,responseDebug=True)
+                collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,window,clickSound,requireAcceptance,autopilot,responseDebug=True)
     print('responses=',responses)
     print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
