@@ -43,8 +43,13 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,myWin,clickSoun
         #click to provide feedback that response collected. Eventually, draw on screen
         clickSound.play()
         if thisResponse or autopilot:
-            responses.append(thisResponse)
-            numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
+            if key in string.ascii_letters:
+                responses.append(thisResponse)
+                numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
+            if key in ['BACKSPACE','DELETE']:
+                if len(responses) >0:
+                    responses.pop()
+                    numResponses -= 1
         respStr = ''.join(responses) #converts list of characters (responses) into string
         #print 'responses=',responses,' respStr = ', respStr #debugOFF
         respStim.setText(respStr,log=False); respStim.draw(); myWin.flip() #draw again, otherwise won't draw the last key
@@ -74,7 +79,8 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     respStim = visual.TextStim(window,pos=(0,0),colorSpace='rgb',color=(1,1,0),alignHoriz='center', alignVert='center',height=.16,units='norm',autoLog=autoLogging)
 
     responseDebug=False; responses = list(); responsesAutopilot = list();
-    numCharsWanted = 2
+    numCharsWanted = 4
     expStop,passThisTrial,responses,responsesAutopilot = \
                 collectStringResponse(numCharsWanted,respPromptStim,respStim,window,clickSound,autopilot,responseDebug=True)
+    print('responses=',responses)
     print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
