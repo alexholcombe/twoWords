@@ -1,18 +1,25 @@
-from psychopy import event
+from psychopy import event, sound
 import numpy as np
 import string
 from copy import deepcopy
 
-def drawString(responses,respStim):
-        respStr = ''.join(responses) #converts list of characters (responses) into string
-        #print 'responses=',responses,' respStr = ', respStr #debugOFF
-        respStim.setText(respStr,log=False)
-        respStim.draw(); 
+def drawResponses(responses,respStim,numCharsWanted,drawBlanks):
+    '''Draw the letters the user has entered
+    drawBlanks is whether to show empty spaces with _, that's why numCharsWanted would be needed
+    '''
+    respStr = ''.join(responses) #converts list of characters (responses) into string
+    #print 'responses=',responses,' respStr = ', respStr #debugOFF
+    if drawBlanks:
+        blanksNeeded = numCharsWanted - len(respStr)
+        respStr = respStr + '_'*blanksNeeded
+    respStim.setText(respStr,log=False)
+    respStim.draw(); 
         
-def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,requireAcceptance,autopilot,responseDebug=False): 
+def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,badKeySound,srequireAcceptance,autopilot,responseDebug=False): 
     '''respPromptStim should be a stimulus with a draw() method
     '''
     event.clearEvents() #clear the keyboard buffer
+    drawBlanks = True
     expStop = False
     passThisTrial = False
     responses=[]
@@ -31,19 +38,22 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
         thisResponse=''
         while noResponseYet: #loop until a valid key is hit. 
            respPromptStim.draw()
-           drawString(responses,respStim)
+           drawResponses(responses,respStim,numCharsWanted,drawBlanks)
            myWin.flip()
-           for key in event.getKeys():       #check if pressed any key
-                  #Possible problem is that if user manages to hit more than one key between frame flips, it will be driven by the last one
-                  key = key.upper()
-                  thisResponse = key
-                  if key in ['ESCAPE']:
-                      expStop = True
-                      noResponseYet = False
+           keysPressed = event.getKeys()
+           #print 'keysPressed = ', keysPressed
+           if len(keysPressed) > 0:
+                key = keysPressed[-1] #process only the last key, it being the most recent. In theory person could type more than one key between window flips, 
+                #but that might be hard to handle. Let's force them to type more slowly
+                key = key.upper()
+                thisResponse = key
+                if key in ['ESCAPE']:
+                     expStop = True
+                     noResponseYet = False
 #                  if key in ['SPACE']: #observer opting out because think they moved their eyes
 #                      passThisTrial = True
 #                      noResponseYet = False
-                  if key in string.ascii_letters or key in ['BACKSPACE','DELETE']:
+                if key in string.ascii_letters or key in ['BACKSPACE','DELETE']:
                       noResponseYet = False
            if autopilot:
                noResponseYet = False
@@ -55,17 +65,23 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
         #Collected one response. Eventually, draw on screen
         if thisResponse or autopilot:
             click = False
+            badKey = False
             if key in string.ascii_letters:
                 responses.append(thisResponse)
                 numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
                 click = True
-            if key in ['BACKSPACE','DELETE']:
+            elif key in ['BACKSPACE','DELETE']:
                 if len(responses) >0:
                     responses.pop()
                     numResponses -= 1
-            if click:
+            else:
+                badKey = True
+            if click and (click is not None):
                 clickSound.play()
-        drawString(responses,respStim)
+            if badKey and (badKeySound is not None):
+                badKeySound.play()
+                print 'played badKeySound'
+        drawResponses(responses,respStim,numCharsWanted,drawBlanks)
         myWin.flip() #draw again, otherwise won't draw the last key
         
         if numResponses == numCharsWanted:  #ask participant to HIT ENTER TO ACCEPT
@@ -85,7 +101,7 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
                         waitingForAccept = False
                         numResponses -= 1
                         responses.pop()
-                        drawString(responses,respStim)
+                        drawResponses(responses,respStim,numCharsWanted,drawBlanks)
                         myWin.flip() #draw again, otherwise won't draw the last key
                 myWin.flip() #end of waitingForAccept loop
                 
@@ -107,9 +123,18 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     try:
         clickSound=sound.Sound('406__tictacshutup__click-1-d.wav')
     except:
-        logging.warn('Could not load the desired click sound file, instead using manually created inferior click')
-        clickSound=sound.Sound('D',octave=4, sampleRate=22050, secs=0.015, bits=8)
-    
+        print 'Could not load the desired click sound file, instead using manually created inferior click'
+        try:
+            clickSound=sound.Sound('D',octave=4, sampleRate=22050, secs=0.015, bits=8)
+        except:
+            clickSound = None
+            print 'Could not create a click sound for typing feedback'
+    try:
+        badKeySound = sound.Sound('A',octave=5, sampleRate=22050, secs=0.015, bits=8)
+    except:
+        badKeySound = None
+        print 'Could not create an invalid key sound for typing feedback'
+        
     respPromptStim = visual.TextStim(window,pos=(0, -.7),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
     acceptTextStim = visual.TextStim(window,pos=(0, -.8),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
     acceptTextStim.setText('Hit ENTER to accept. Backspace to edit')
@@ -120,6 +145,6 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     respPromptStim.setText('Enter your ' + str(numCharsWanted) + '-character response')
     requireAcceptance = True
     expStop,passThisTrial,responses,responsesAutopilot = \
-                collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,window,clickSound,requireAcceptance,autopilot,responseDebug=True)
+                collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,window,clickSound,badKeySound,requireAcceptance,autopilot,responseDebug=True)
     print('responses=',responses)
     print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
