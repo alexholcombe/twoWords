@@ -36,15 +36,19 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
         print 'accepted=',accepted
         noResponseYet = True
         thisResponse=''
-        while noResponseYet: #loop until a valid key is hit. 
+        while noResponseYet: #loop until a valid key is hit
            respPromptStim.draw()
            drawResponses(responses,respStim,numCharsWanted,drawBlanks)
            myWin.flip()
-           keysPressed = event.getKeys()
-           #print 'keysPressed = ', keysPressed
-           if len(keysPressed) > 0:
+           click =  False
+           keysPressed = event.getKeys();            #print 'keysPressed = ', keysPressed
+           if autopilot:
+               noResponseYet = False
+               if 'ESCAPE' in keysPressed:
+                   expStop = True
+           elif len(keysPressed) > 0:
                 key = keysPressed[-1] #process only the last key, it being the most recent. In theory person could type more than one key between window flips, 
-                #but that might be hard to handle. Let's force them to type more slowly
+                #but that might be hard to handle.
                 key = key.upper()
                 thisResponse = key
                 if key in ['ESCAPE']:
@@ -53,34 +57,20 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
 #                  if key in ['SPACE']: #observer opting out because think they moved their eyes
 #                      passThisTrial = True
 #                      noResponseYet = False
-                if key in string.ascii_letters or key in ['BACKSPACE','DELETE']:
-                      noResponseYet = False
-           if autopilot:
-               noResponseYet = False
-               for key in event.getKeys():    #check if pressed abort-type key. But in autopilot so not in a loop, so have to get lucky
-                      key = key.upper()
-                      thisResponse = key
-                      if key in ['ESCAPE']:
-                            expStop = True
-        #Collected one response. Eventually, draw on screen
-        if thisResponse or autopilot:
-            click = False
-            badKey = False
-            if key in string.ascii_letters:
-                responses.append(thisResponse)
-                numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
-                click = True
-            elif key in ['BACKSPACE','DELETE']:
-                if len(responses) >0:
-                    responses.pop()
-                    numResponses -= 1
-            else:
-                badKey = True
-            if click and (click is not None):
-                clickSound.play()
-            if badKey and (badKeySound is not None):
-                badKeySound.play()
-                print 'played badKeySound'
+                elif key in string.ascii_letters:
+                    noResponseYet = False
+                    responses.append(thisResponse)
+                    numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
+                    click = True
+                elif key in ['BACKSPACE','DELETE']:
+                    if len(responses) >0:
+                        responses.pop()
+                        numResponses -= 1
+                else: #invalid key pressed
+                    badKeySound.play()
+
+        if click and (click is not None):
+            clickSound.play()
         drawResponses(responses,respStim,numCharsWanted,drawBlanks)
         myWin.flip() #draw again, otherwise won't draw the last key
         
@@ -104,7 +94,8 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
                         drawResponses(responses,respStim,numCharsWanted,drawBlanks)
                         myWin.flip() #draw again, otherwise won't draw the last key
                 myWin.flip() #end of waitingForAccept loop
-                
+          #end of waiting until response is finished, all keys and acceptance if required
+          
     responsesAutopilot = np.array(   numCharsWanted*list([('A')])   )
     responses=np.array( responses )
     #print 'responses=', responses,' responsesAutopilot=', responsesAutopilot #debugOFF
@@ -130,7 +121,7 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
             clickSound = None
             print 'Could not create a click sound for typing feedback'
     try:
-        badKeySound = sound.Sound('A',octave=5, sampleRate=22050, secs=0.015, bits=8)
+        badKeySound = sound.Sound('A',octave=5, sampleRate=22050, secs=0.03, bits=8)
     except:
         badKeySound = None
         print 'Could not create an invalid key sound for typing feedback'
