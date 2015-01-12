@@ -102,21 +102,14 @@ def collectStringResponse(numCharsWanted,respPromptStim,respStim,acceptTextStim,
     return expStop,passThisTrial,responses,responsesAutopilot
 # #######End of function definition that collects responses!!!! #####################################
 
-if __name__=='__main__':  #Running this file directly, must want to test functions in this file
-    from psychopy import monitors, visual, event, data, logging, core, sound, gui
-    window = visual.Window()
-    msg = visual.TextStim(window, text='press a key\n<esc> to quit')
-    msg.draw()
-    window.flip()
-    autoLogging=False
-    autopilot = False
-    #create click sound for keyboard
+def setupSoundsForResponse():
+    fileName = '406__tictacshutup__click-1-d.wav'
     try:
-        clickSound=sound.Sound('406__tictacshutup__click-1-d.wav')
+        clickSound=sound.Sound(fileName)
     except:
         print 'Could not load the desired click sound file, instead using manually created inferior click'
         try:
-            clickSound=sound.Sound('D',octave=4, sampleRate=22050, secs=0.015, bits=8)
+            clickSound=sound.Sound('D',octave=3, sampleRate=22050, secs=0.015, bits=8)
         except:
             clickSound = None
             print 'Could not create a click sound for typing feedback'
@@ -126,6 +119,19 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
         badKeySound = None
         print 'Could not create an invalid key sound for typing feedback'
         
+    return clickSound, badKeySound
+
+if __name__=='__main__':  #Running this file directly, must want to test functions in this file
+    from psychopy import monitors, visual, event, data, logging, core, sound, gui
+    window = visual.Window()
+    msg = visual.TextStim(window, text='press a key\n<esc> to quit')
+    msg.draw()
+    window.flip()
+    autoLogging=False
+    autopilot = False
+    #create click sound for keyboard
+
+    clickSound, badKeySound = setupSoundsForResponse()
     respPromptStim = visual.TextStim(window,pos=(0, -.7),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
     acceptTextStim = visual.TextStim(window,pos=(0, -.8),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
     acceptTextStim.setText('Hit ENTER to accept. Backspace to edit')
