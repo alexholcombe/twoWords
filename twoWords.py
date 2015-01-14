@@ -52,12 +52,11 @@ lettersUnparsed = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".upper()
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
     wordList[i] = wordList[i].replace(" ", "") #delete spaces
-    
+
 bgColor = [-.7,-.7,-.7] # [-1,-1,-1]
 cueColor = [1.,1.,1.]
 letterColor = [1.,1.,1.]
-cueRadius = 6 #6 deg, as in Martini E2    Letters should have height of 2.5 deg
-
+cueRadius = 7 #6 deg in Goodbourn & Holcombe
 widthPix= 1280 #monitor width in pixels of Agosta
 heightPix= 800 #800 #monitor height in pixels
 monitorwidth = 38.7 #monitor width in cm
@@ -373,9 +372,9 @@ print('experimentPhase\ttrialnum\tsubject\ttask\t',file=dataFile,end='')
 print('noisePercent\t',end='',file=dataFile)
 if task=='T1':
     numRespsWanted = 2
-
+dataFile.write('rightResponseFirst\t')
 for i in range(numRespsWanted):
-   dataFile.write('answerPos'+str(i)+'\t')   #have to use write to avoid ' ' between successive text, at least until Python 3
+   dataFile.write('cuePos'+str(i)+'\t')   #have to use write to avoid ' ' between successive text, at least until Python 3
    dataFile.write('answer'+str(i)+'\t')
    dataFile.write('response'+str(i)+'\t')
    dataFile.write('correct'+str(i)+'\t')
@@ -503,7 +502,7 @@ def do_RSVP_stim(cuePos, seq1, seq2, proportnNoise,trialN):
     core.wait(.1);
     trialClock.reset()
     fixatnPeriodMin = 0.3
-    fixatnPeriodFrames = int(   (np.random.rand(1)/2.+fixatnPeriodMin)   *refreshRate)  #random interval between 800ms and 1.3s (changed when Fahed ran outer ring ident)
+    fixatnPeriodFrames = int(   (np.random.rand(1)/2.+fixatnPeriodMin)   *refreshRate)  #random interval between 800ms and 1.3s
     ts = list(); #to store time of each drawing, to check whether skipped frames
     for i in range(fixatnPeriodFrames+20):  #prestim fixation interval
         #if i%4>=2 or demo or exportImages: #flicker fixation on and off at framerate to see when skip frame
@@ -542,8 +541,7 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
     #autopilot is global variable
     if autopilot or passThisTrial:
         response = responseAutopilot
-    print('handleAndScoreResponse correctAnswerIdxs=',correctAnswerIdxs,'\nstimSequence=',stimSequence, '\nwords=',wordList)
-    print('letterToNumber(responses[0])==',letterToNumber(responses[0]))
+    #print('handleAndScoreResponse correctAnswerIdxs=',correctAnswerIdxs,'\nstimSequence=',stimSequence, '\nwords=',wordList)
     correct = 0
     approxCorrect = 0
     posOfResponse = -999
@@ -552,10 +550,10 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
     correctAnswer = wordList[idx].upper()
     responseString= ''.join(['%s' % char for char in response])
     responseString= responseString.upper()
-    print('correctAnswer=',correctAnswer ,' responseString=',responseString)
+    #print('correctAnswer=',correctAnswer ,' responseString=',responseString)
     if correctAnswer == responseString:
         correct = 1
-    print('correct=',correct)
+    #print('correct=',correct)
     responseWordIdx = wordToIdx(responseString,wordList)
     if responseWordIdx is None: #response is not in the wordList
         posOfResponse = -999
@@ -735,18 +733,15 @@ else: #not staircase
         numCharsInResponse = len(wordList[0])
         dL = [None]*numRespsWanted #dummy list for null values
         expStop = copy.deepcopy(dL); responses = copy.deepcopy(dL); responsesAutopilot = copy.deepcopy(dL); passThisTrial=copy.deepcopy(dL)
+        print(thisTrial['rightResponseFirst'],'\t', end='', file=dataFile)
         responseOrder = range(numRespsWanted)
-        if thisTrial['rightResponseFirst']:
+        if thisTrial['rightResponseFirst']: #change order of indices depending on rightResponseFirst. response0, answer0 etc refer to which one had to be reported first
                 responseOrder.reverse()
-        #change order of indices depending on rightResponseFirst
         for i in responseOrder:
-            x = 3* wordEccentricity*(i*2-1) #put it farther out, so participant is sure which is left and which right
-
-            eStop,passThis,response,responseAutopilot = stringResponse.collectStringResponse(
+            x = 3* wordEccentricity*(i*2-1) #put it 3 times farther out than stimulus, so participant is sure which is left and which right
+            expStop[i],passThisTrial[i],responses[i],responsesAutopilot[i] = stringResponse.collectStringResponse(
                                       numCharsInResponse,x,respPromptStim,respStim,acceptTextStim,fixationPoint,myWin,clickSound,badKeySound,
-                                                                                   requireAcceptance,autopilot,responseDebug=True)
-            expStop.append(eStop); passThisTrial.append(passThis); responses.append(response); responsesAutopilot.append(responseAutopilot)
-                                                                               
+                                                                                   requireAcceptance,autopilot,responseDebug=True)                                                                               
         print('responses=',responses)
         print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
         expStop = np.array(expStop).any(); passThisTrial = np.array(passThisTrial).any()
@@ -756,7 +751,7 @@ else: #not staircase
             print(subject,'\t',task,'\t', round(noisePercent,3),'\t', end='', file=dataFile)
             i = 0
             eachCorrect = np.ones(numRespsWanted)*-999; eachApproxCorrect = np.ones(numRespsWanted)*-999
-            for i in range(numRespsWanted):
+            for i in range(numRespsWanted): #scored and printed to dataFile in left first, right second order even if collected in different order
                 if i==0:
                     sequenceStream = sequenceStream1; correctAnswerIdxs = correctAnswerIdxsStream1; 
                 else: sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
@@ -770,12 +765,6 @@ else: #not staircase
             numTrialsApproxCorrect += eachApproxCorrect.all()
             numTrialsEachCorrect += eachCorrect #list numRespsWanted long
             numTrialsEachApproxCorrect += eachApproxCorrect #list numRespsWanted long
-
-            if task=="T1T2":
-                cue2lagIdx = list(possibleCue2lags).index(cue2lag)
-                nTrialsCorrectT2eachLag[cue2lagIdx] += eachCorrect[1]
-                nTrialsApproxCorrectT2eachLag[cue2lagIdx] += eachApproxCorrect[1] #this is no longer right
-                nTrialsEachLag[cue2lagIdx] += 1
                 
             if exportImages:  #catches one frame of response
                  myWin.getMovieFrame() #I cant explain why another getMovieFrame, and core.wait is needed
