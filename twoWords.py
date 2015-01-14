@@ -17,7 +17,7 @@ except ImportError:
     print('Could not import strongResponse.py (you need that file to be in the same directory)')
 
 wordEccentricity=3
-tasks=['T1','T1T2']; task = tasks[0]
+tasks=['T1']; task = tasks[0]
 #THINGS THAT COULD PREVENT SUCCESS ON A STRANGE MACHINE
 #same screen or external screen? Set scrn=0 if one screen. scrn=1 means display stimulus on second screen.
 #widthPix, heightPix
@@ -44,8 +44,15 @@ staircaseTrials = 25
 prefaceStaircaseTrialsN = 20 #22
 prefaceStaircaseNoise = np.array([5,20,20,20, 50,50,50,5,80,80,80,5,95,95,95]) #will be recycled / not all used, as needed
 descendingPsycho = True #psychometric function- more noise means worse performance
-
 threshCriterion = 0.58
+
+numWordsInStream = 24
+wordsUnparsed="the, and, for, you, say, but, his, not, she, can, who, get, her, all, one, out, see, him, now, how, its, our, two, way" #24 most common words
+lettersUnparsed = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".upper()
+wordList = wordsUnparsed.split(",") #split into list
+for i in range(len(wordList)):
+    wordList[i] = wordList[i].replace(" ", "") #delete spaces
+    
 bgColor = [-.7,-.7,-.7] # [-1,-1,-1]
 cueColor = [1.,1.,1.]
 letterColor = [1.,1.,1.]
@@ -94,7 +101,6 @@ if quitFinder:
     os.system(shellCmd)
 
 #letter size 2.5 deg
-numLettersToPresent = 26
 SOAms = 233 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
 #Minimum SOAms should be 84  because any shorter, I can't always notice the second ring when lag1.   71 in Martini E2 and E1b (actually he used 66.6 but that's because he had a crazy refresh rate of 90 Hz)
 letterDurMs = 80 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
@@ -108,7 +114,7 @@ rateInfo = 'total SOA=' + str(round(  (ISIframes + letterDurFrames)*1000./refres
 rateInfo+=  'ISIframes ='+str(ISIframes)+' or '+str(ISIframes*(1000./refreshRate))+' ms and letterDurFrames ='+str(letterDurFrames)+' or '+str(round( letterDurFrames*(1000./refreshRate), 2))+'ms'
 logging.info(rateInfo); print(rateInfo)
 
-trialDurFrames = int( numLettersToPresent*(ISIframes+letterDurFrames) ) #trial duration in frames
+trialDurFrames = int( numWordsInStream*(ISIframes+letterDurFrames) ) #trial duration in frames
 
 monitorname = 'testmonitor'
 waitBlank = False
@@ -265,6 +271,28 @@ if fullscr and not demo and not exportImages:
     logging.info(runInfo)
 logging.flush()
 
+textStimuliStream1 = list()
+textStimuliStream2 = list() #used for second, simultaneous RSVP stream
+def calcAndPredrawStimuli(wordList):
+    if len(wordList) < numWordsInStream:
+        print('Error! Your word list must have at least ',numWordsInStream,'strings')
+    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list
+    print('wordList=',wordList)
+    for i in range(0,numWordsInStream): #draw the words that will be used on this trial, the first 26 of the shuffled list
+       word = wordList[ i ]  #     #[ idxsIntoWordList[i] ]
+       textStimulusStream1 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging)
+       textStimulusStream2 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging)
+       textStimulusStream1.setPos([-wordEccentricity,0]) #left
+       textStimuliStream1.append(textStimulusStream1)
+       textStimulusStream2.setPos([wordEccentricity,0]) #right
+       textStimuliStream2.append(textStimulusStream2)
+
+    idxsStream1 = idxsIntoWordList #first RSVP stream
+    np.random.shuffle(idxsIntoWordList)
+    idxsStream2 = copy.deepcopy(idxsIntoWordList)
+    np.random.shuffle(idxsStream2)
+    return idxsStream1, idxsStream2
+    
 #create click sound for keyboard
 try:
     click=sound.Sound('406__tictacshutup__click-1-d.wav')
@@ -293,19 +321,15 @@ nextText = visual.TextStim(myWin,pos=(0, .1),colorSpace='rgb',color = (1,1,1),al
 NextRemindCountText = visual.TextStim(myWin,pos=(0,.2),colorSpace='rgb',color= (1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
 screenshot= False; screenshotDone = False
 stimList = []
-
 #SETTING THE CONDITIONS
-possibleCue1positions =  np.array([6,7,8,9,10]) # [4,10,16,22] used in Martini E2, group 2
-possibleCue2lags = np.array([1,2,5,8,10]) 
-for cue1pos in possibleCue1positions:
-   for cue2lag in possibleCue2lags:
-        stimList.append( {'cue1pos':cue1pos, 'cue2lag':cue2lag } )
-#Martini E2 and also AB experiments used 400 trials total, with breaks between every 100 trials
+cuePositions =  np.array([6,7,8,9,10]) # [4,10,16,22] used in Martini E2, group 2
+for cuePos in cuePositions:
+   for rightResponseFirst in [False,True]:
+        stimList.append( {'cuePos':cuePos, 'rightResponseFirst':rightResponseFirst } )
 
 trials = data.TrialHandler(stimList,trialsPerCondition) #constant stimuli method
 trialsForPossibleStaircase = data.TrialHandler(stimList,trialsPerCondition) #independent randomization, just to create random trials for staircase phase
-numRightWrongEachCuepos = np.zeros([ len(possibleCue1positions), 1 ]); #summary results to print out at end
-numRightWrongEachCue2lag = np.zeros([ len(possibleCue2lags), 1 ]); #summary results to print out at end
+numRightWrongEachCuepos = np.zeros([ len(cuePositions), 1 ]); #summary results to print out at end
 
 logging.info( 'numtrials=' + str(trials.nTotal) + ' and each trialDurFrames='+str(trialDurFrames)+' or '+str(trialDurFrames*(1000./refreshRate))+ \
                ' ms' + '  task=' + task)
@@ -349,8 +373,7 @@ print('experimentPhase\ttrialnum\tsubject\ttask\t',file=dataFile,end='')
 print('noisePercent\t',end='',file=dataFile)
 if task=='T1':
     numRespsWanted = 2
-elif task=='T1T2':
-    numRespsWanted = 4
+
 for i in range(numRespsWanted):
    dataFile.write('answerPos'+str(i)+'\t')   #have to use write to avoid ' ' between successive text, at least until Python 3
    dataFile.write('answer'+str(i)+'\t')
@@ -457,47 +480,13 @@ numTrialsCorrect = 0;
 numTrialsApproxCorrect = 0;
 numTrialsEachCorrect= np.zeros( numRespsWanted )
 numTrialsEachApproxCorrect= np.zeros( numRespsWanted )
-if task=='T1T2':
-    nTrialsCorrectT2eachLag = np.zeros(len(possibleCue2lags)); nTrialsEachLag = np.zeros(len(possibleCue2lags))
-    nTrialsApproxCorrectT2eachLag = np.zeros(len(possibleCue2lags));
-            
-wordsUnparsed="the, and, for, you, say, but, his, not, she, can, who, get, her, all, one, out, see, him, now, how, its, our, two, way, new, cat" #25 most common words, plus cat
-lettersUnparsed = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".upper()
-wordList = wordsUnparsed.split(",") #split into list
-for i in range(len(wordList)):
-    wordList[i] = wordList[i].replace(" ", "") #delete spaces
-    
-textStimuliStream1 = list()
-textStimuliStream2 = list() #used for second, simultaneous RSVP stream
-def calcAndPredrawStimuli():
-    #counting on global variable textStimuli
-    if len(wordList) < 26:
-        print('Error! Your word list must have at least 26 wordList')
-    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list
-    print('wordList=',wordList)
-    for i in range(0,26): #draw the words that will be used on this trial, the first 26 of the shuffled list
-       word = wordList[ i ]  #     #[ idxsIntoWordList[i] ]
-       textStimulusStream1 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging)
-       textStimulusStream2 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging)
-       textStimulusStream1.setPos([-wordEccentricity,0]) #left
-       textStimuliStream1.append(textStimulusStream1)
-       textStimulusStream2.setPos([wordEccentricity,0]) #right
-       textStimuliStream2.append(textStimulusStream2)
 
-    idxsStream1 = idxsIntoWordList #first RSVP stream
-    np.random.shuffle(idxsIntoWordList)
-    idxsStream2 = copy.deepcopy(idxsIntoWordList)
-    np.random.shuffle(idxsStream2)
-    return idxsStream1, idxsStream2
-
-def do_RSVP_stim(cue1pos, cue2lag, seq1, seq2, proportnNoise,trialN):
+def do_RSVP_stim(cuePos, seq1, seq2, proportnNoise,trialN):
     #relies on global variables:
     #   textStimuli, logging, bgColor
     #
-    cuesPos = [] #will contain the positions of all the cues (targets)
-    cuesPos.append(cue1pos)
-    if task=='T1T2':
-        cuesPos.append(cue1pos+cue2lag)
+    cuesPos = [] #will contain the positions in the stream of all the cues (targets)
+    cuesPos.append(cuePos)
     cuesPos = np.array(cuesPos)
     noise = None; allFieldCoords=None; numNoiseDots=0
     if proportnNoise > 0: #gtenerating noise is time-consuming, so only do it once per trial. Then shuffle noise coordinates for each letter
@@ -539,8 +528,6 @@ def do_RSVP_stim(cue1pos, cue2lag, seq1, seq2, proportnNoise,trialN):
 
     if task=='T1':
         respPromptStim.setText('What was circled?',log=False)   
-    elif task=='T1T2':
-        respPromptStim.setText('Which two were circled?',log=False)
     else: respPromptStim.setText('Error: unexpected task',log=False)
     postCueNumBlobsAway=-999 #doesn't apply to non-tracking and click tracking task
     correctAnswerIdxsStream1 = np.array( seq1[cuesPos] )
@@ -666,9 +653,9 @@ if doStaircase:
                 print('stopping because staircase.next() returned a StopIteration, which it does when it is finished')
                 break #break out of the trials loop
         #print('staircaseTrialN=',staircaseTrialN)
-        idxsStream1, idxsStream2 = calcAndPredrawStimuli()
+        idxsStream1, idxsStream2 = calcAndPredrawStimuli(wordList)
         cuesPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
-                                        do_RSVP_stim(cue1pos, cue2lag, idxsStream1, idxsStream2, noisePercent/100.,staircaseTrialN)
+                                        do_RSVP_stim(cuePos, idxsStream1, idxsStream2, noisePercent/100.,staircaseTrialN)
         numCasesInterframeLong = timingCheckAndLog(ts,staircaseTrialN)
         expStop,passThisTrial,responses,responsesAutopilot = \
                 stringResponse.collectStringResponse(numRespsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,badKeySound,
@@ -732,25 +719,23 @@ else: #not staircase
     phasesMsg = 'Experiment will have '+str(trials.nTotal)+' trials. Letters will be drawn with superposed noise of' + "{:.2%}".format(defaultNoiseLevel)
     print(phasesMsg); logging.info(phasesMsg)
     
-    #myWin= openMyStimWindow();    myWin.flip(); myWin.flip();myWin.flip();myWin.flip()
     nDoneMain =0
     while nDoneMain < trials.nTotal and expStop==False:
         if nDoneMain==0:
             msg='Starting main (non-staircase) part of experiment'
             logging.info(msg); print(msg)
         thisTrial = trials.next() #get a proper (non-staircase) trial
-        cue1pos = thisTrial['cue1pos']
-        cue2lag = None
-        if task=="T1T2":
-            cue2lag = thisTrial['cue2lag']
-        sequenceStream1, sequenceStream2 = calcAndPredrawStimuli()
+        cuePos = thisTrial['cuePos']
+        sequenceStream1, sequenceStream2 = calcAndPredrawStimuli(wordList)
         cuesPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
-                                                                    do_RSVP_stim(cue1pos, cue2lag, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
+                                                                    do_RSVP_stim(cuePos, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)
         #call individually for each response
         expStop = list(); passThisTrial = list(); responses=list(); responsesAutopilot=list()
         numCharsInResponse = len(wordList[0])
         for i in range(numRespsWanted):
+            #rightResponseFirst
+
             x = 3* wordEccentricity*(i*2-1) #put it farther out, so participant is sure which is left and which right
             eStop,passThis,response,responseAutopilot = stringResponse.collectStringResponse(
                                       numCharsInResponse,x,respPromptStim,respStim,acceptTextStim,fixationPoint,myWin,clickSound,badKeySound,
@@ -828,16 +813,9 @@ if expStop:
 if not doStaircase and (nDoneMain >0):
     print('Of ',nDoneMain,' trials, on ',numTrialsCorrect*1.0/nDoneMain*100., '% of all trials all targets reported exactly correct',sep='')
     print('All targets approximately correct in ',round(numTrialsApproxCorrect*1.0/nDoneMain*100,1),'% of trials',sep='')
-    print('T1: ',round(numTrialsEachCorrect[0]*1.0/nDoneMain*100.,2), '% correct',sep='')
-    if len(numTrialsEachCorrect) >1:
-        print('T2: ',round(numTrialsEachCorrect[1]*1.0/nDoneMain*100,2),'% correct',sep='')
-    print('T1: ',round(numTrialsEachApproxCorrect[0]*1.0/nDoneMain*100,2),'% approximately correct',sep='')
-    if len(numTrialsEachCorrect) >1:
-        print('T2: ',round(numTrialsEachApproxCorrect[1]*1.0/nDoneMain*100,2),'% approximately correct',sep='')
-        print('T2 for each of the lags,',np.around(possibleCue2lags,0),': ', np.around(100*nTrialsCorrectT2eachLag / nTrialsEachLag,3), '%correct, and ',
-                 np.around(100*nTrialsApproxCorrectT2eachLag/nTrialsEachLag,3),'%approximately correct')
-   #print numRightWrongEachSpeedOrder[:,1] / ( numRightWrongEachSpeedOrder[:,0] + numRightWrongEachSpeedOrder[:,1])   
+    for i in range(numRespsWanted):
+        print('stream',i,': ',round(numTrialsEachCorrect[i]*1.0/nDoneMain*100.,2), '% correct',sep='')
+        print('stream',i,': ',round(numTrialsEachApproxCorrect[i]*1.0/nDoneMain*100,2),'% approximately correct',sep='')
 
 logging.flush(); dataFile.close()
 myWin.close() #have to close window if want to show a plot
-#ADD PLOT OF AB PERFORMANCE?
