@@ -733,10 +733,15 @@ else: #not staircase
         #call individually for each response
         expStop = list(); passThisTrial = list(); responses=list(); responsesAutopilot=list()
         numCharsInResponse = len(wordList[0])
-        for i in range(numRespsWanted):
-            #rightResponseFirst
-
+        dL = [None]*numRespsWanted #dummy list for null values
+        expStop = copy.deepcopy(dL); responses = copy.deepcopy(dL); responsesAutopilot = copy.deepcopy(dL); passThisTrial=copy.deepcopy(dL)
+        responseOrder = range(numRespsWanted)
+        if thisTrial['rightResponseFirst']:
+                responseOrder.reverse()
+        #change order of indices depending on rightResponseFirst
+        for i in responseOrder:
             x = 3* wordEccentricity*(i*2-1) #put it farther out, so participant is sure which is left and which right
+
             eStop,passThis,response,responseAutopilot = stringResponse.collectStringResponse(
                                       numCharsInResponse,x,respPromptStim,respStim,acceptTextStim,fixationPoint,myWin,clickSound,badKeySound,
                                                                                    requireAcceptance,autopilot,responseDebug=True)
