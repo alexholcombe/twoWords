@@ -750,11 +750,11 @@ else: #not staircase
                                       numCharsInResponse,x,respPromptStim,respStim,acceptTextStim,fixationPoint,myWin,clickSound,badKeySound,
                                                                                    requireAcceptance,autopilot,responseDebug=True)                                                                               
         expStop = np.array(expStop).any(); passThisTrial = np.array(passThisTrial).any()
-        if autopilot:
-            for f in range(20): core.wait(1.0/60) #myWin.flip()
-            keysPressed = event.getKeys()
-            if 'ESCAPE' in keysPressed or 'escape' in keysPressed: #another chance to pick up that the person hit escape, hard in autopilot case
-                expStop = True
+#        if autopilot:
+#            for f in range(20): core.wait(1.0/60) #myWin.flip()
+#            keysPressed = event.getKeys()
+#            if 'ESCAPE' in keysPressed or 'escape' in keysPressed: #another chance to pick up that the person hit escape, hard in autopilot case
+#                expStop = True
         if not expStop:
             print('main\t', end='', file=dataFile) #first thing printed on each line of dataFile to indicate main part of experiment, not staircase
             print(nDoneMain,'\t', end='', file=dataFile)

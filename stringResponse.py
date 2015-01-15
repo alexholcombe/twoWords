@@ -2,6 +2,7 @@ from psychopy import event, sound
 import numpy as np
 import string
 from copy import deepcopy
+import time
 
 def drawResponses(responses,respStim,numCharsWanted,drawBlanks):
     '''Draw the letters the user has entered
@@ -39,7 +40,11 @@ def collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextSti
            drawResponses(responses,respStim,numCharsWanted,drawBlanks)
            myWin.flip()
            click =  False
-           keysPressed = event.getKeys();            #print 'keysPressed = ', keysPressed
+           if autopilot: #need to wait otherwise dont have chance to press a key 
+                for f in range(20): time.sleep(.01) #core.wait(1.0/60) #myWin.flip()
+           keysPressed = event.getKeys()
+           keysPressed = [key.upper() for key in keysPressed] #transform to uppercase
+           print('keysPressed=',keysPressed)
            if autopilot:
                noResponseYet = False
                numResponses = numCharsWanted
@@ -139,7 +144,7 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     respStim = visual.TextStim(window,pos=(0,0),colorSpace='rgb',color=(1,1,0),alignHoriz='center', alignVert='center',height=.16,units='norm',autoLog=autoLogging)
 
     responseDebug=False; responses = list(); responsesAutopilot = list();
-    numCharsWanted = 2
+    numCharsWanted = 5
     respPromptStim.setText('Enter your ' + str(numCharsWanted) + '-character response')
     requireAcceptance = True
     x=-.2 #x offset relative to centre of screen
