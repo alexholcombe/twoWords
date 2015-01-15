@@ -1,5 +1,5 @@
 #Alex Holcombe alex.holcombe@sydney.edu.au
-#See the README.md for more information: https://github.com/alexholcombe/attentional-blink/blob/master/README.md
+#See the github repository for more information: https://github.com/alexholcombe/twoWords
 from __future__ import print_function
 from psychopy import monitors, visual, event, data, logging, core, sound, gui
 import psychopy.info
@@ -22,7 +22,7 @@ tasks=['T1']; task = tasks[0]
 #same screen or external screen? Set scrn=0 if one screen. scrn=1 means display stimulus on second screen.
 #widthPix, heightPix
 quitFinder = False #if checkRefreshEtc, quitFinder becomes True
-autopilot=False
+autopilot=True
 demo=False #False
 exportImages= False #quits after one trial
 subject='Hubert' #user is prompted to enter true subject name
@@ -65,9 +65,10 @@ fullscr=True #True to use fullscreen, False to not. Timing probably won't be qui
 allowGUI = False
 if demo: monitorwidth = 23#18.0
 if exportImages:
-    widthPix = 400; heightPix = 400
+    widthPix = 600; heightPix = 600
     monitorwidth = 13.0
     fullscr=False; scrn=0
+    framesSaved=0
 if demo:    
     scrn=0; fullscr=False
     widthPix = 800; heightPix = 600
@@ -100,7 +101,7 @@ if quitFinder:
     os.system(shellCmd)
 
 #letter size 2.5 deg
-SOAms = 233 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
+SOAms = 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
 #Minimum SOAms should be 84  because any shorter, I can't always notice the second ring when lag1.   71 in Martini E2 and E1b (actually he used 66.6 but that's because he had a crazy refresh rate of 90 Hz)
 letterDurMs = 80 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
 
@@ -168,7 +169,7 @@ else: #checkRefreshEtc
 myWin.close() #have to close window to show dialog box
 
 defaultNoiseLevel = 0.0 #to use if no staircase, can be set by user
-trialsPerCondition = 8 #default value
+trialsPerCondition = 2 #default value
 dlgLabelsOrdered = list()
 if doStaircase:
     myDlg = gui.Dlg(title="Staircase to find appropriate noisePercent", pos=(200,400))
@@ -432,7 +433,7 @@ cue = visual.Circle(myWin,
                  radius=cueRadius,#Martini used circles with diameter of 12 deg
                  lineColorSpace = 'rgb',
                  lineColor=bgColor,
-                 lineWidth=2.0, #in pixels
+                 lineWidth=4.0, #in pixels. Was thinner (2 pixels) in letter AB experiments
                  units = 'deg',
                  fillColorSpace = 'rgb',
                  fillColor=None, #beware, with convex shapes fill colors don't work
@@ -490,7 +491,9 @@ def do_RSVP_stim(thisTrial, seq1, seq2, proportnNoise,trialN):
     #relies on global variables:
     #   textStimuli, logging, bgColor
     #  thisTrial should have 'cuePos'
+    global framesSaved #because change this variable. Can only change a global variable if you declare it
     cuesPos = [] #will contain the positions in the stream of all the cues (targets)
+
     cuesPos.append(thisTrial['cuePos'])
     cuesPos = np.array(cuesPos)
     noise = None; allFieldCoords=None; numNoiseDots=0
@@ -598,7 +601,7 @@ def play_high_tone_correct_low_incorrect(correct, passThisTrial=False):
     else: #incorrect
         low.play()
 
-expStop=False; framesSaved=0
+expStop=False
 nDoneMain = -1 #change to zero once start main part of experiment
 if doStaircase:
     #create the staircase handler
@@ -635,7 +638,7 @@ if doStaircase:
     
     phasesMsg = ('Doing '+str(prefaceStaircaseTrialsN)+'trials with noisePercent= '+str(prefaceStaircaseNoise)+' then doing a max '+str(staircaseTrials)+'-trial staircase')
     print(phasesMsg); logging.info(phasesMsg)
-    
+
     #staircaseStarterNoise PHASE OF EXPERIMENT
     corrEachTrial = list() #only needed for easyStaircaseStarterNoise
     staircaseTrialN = -1; mainStaircaseGoing = False
@@ -690,6 +693,7 @@ if doStaircase:
     if staircaseTrialN+1 < len(prefaceStaircaseNoise) and (staircaseTrialN>=0): #exp stopped before got through staircase preface trials, so haven't imported yet
         print('Importing ',corrEachTrial,' and intensities ',prefaceStaircaseNoise[0:staircaseTrialN+1])
         staircase.importData(100-prefaceStaircaseNoise[0:staircaseTrialN], np.array(corrEachTrial)) 
+    print('framesSaved after staircase=',framesSaved) #debugON
 
     timeAndDateStr = time.strftime("%H:%M on %d %b %Y", time.localtime())
     msg = ('prefaceStaircase phase' if expStop else '')
@@ -722,9 +726,8 @@ else: #not staircase
     noisePercent = defaultNoiseLevel
     phasesMsg = 'Experiment will have '+str(trials.nTotal)+' trials. Letters will be drawn with superposed noise of' + "{:.2%}".format(defaultNoiseLevel)
     print(phasesMsg); logging.info(phasesMsg)
-    
     nDoneMain =0
-    while nDoneMain < trials.nTotal and expStop==False:
+    while nDoneMain < trials.nTotal and expStop==False: #MAIN EXPERIMENT LOOP
         if nDoneMain==0:
             msg='Starting main (non-staircase) part of experiment'
             logging.info(msg); print(msg)
@@ -733,12 +736,11 @@ else: #not staircase
         cuesPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                                                     do_RSVP_stim(thisTrial, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)
-        #call individually for each response
+        #call for each response
         expStop = list(); passThisTrial = list(); responses=list(); responsesAutopilot=list()
         numCharsInResponse = len(wordList[0])
         dL = [None]*numRespsWanted #dummy list for null values
         expStop = copy.deepcopy(dL); responses = copy.deepcopy(dL); responsesAutopilot = copy.deepcopy(dL); passThisTrial=copy.deepcopy(dL)
-        print(thisTrial['rightResponseFirst'],'\t', end='', file=dataFile)
         responseOrder = range(numRespsWanted)
         if thisTrial['rightResponseFirst']: #change order of indices depending on rightResponseFirst. response0, answer0 etc refer to which one had to be reported first
                 responseOrder.reverse()
@@ -747,13 +749,19 @@ else: #not staircase
             expStop[i],passThisTrial[i],responses[i],responsesAutopilot[i] = stringResponse.collectStringResponse(
                                       numCharsInResponse,x,respPromptStim,respStim,acceptTextStim,fixationPoint,myWin,clickSound,badKeySound,
                                                                                    requireAcceptance,autopilot,responseDebug=True)                                                                               
-        print('responses=',responses)
-        print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
         expStop = np.array(expStop).any(); passThisTrial = np.array(passThisTrial).any()
+        if autopilot:
+            for f in range(20): core.wait(1.0/60) #myWin.flip()
+            keysPressed = event.getKeys()
+            if 'ESCAPE' in keysPressed or 'escape' in keysPressed: #another chance to pick up that the person hit escape, hard in autopilot case
+                expStop = True
         if not expStop:
             print('main\t', end='', file=dataFile) #first thing printed on each line of dataFile to indicate main part of experiment, not staircase
             print(nDoneMain,'\t', end='', file=dataFile)
             print(subject,'\t',task,'\t', round(noisePercent,3),'\t', end='', file=dataFile)
+            print(thisTrial['leftStreamFlip'],'\t', end='', file=dataFile)
+            print(thisTrial['rightStreamFlip'],'\t', end='', file=dataFile)
+            print(thisTrial['rightResponseFirst'],'\t', end='', file=dataFile)
             i = 0
             eachCorrect = np.ones(numRespsWanted)*-999; eachApproxCorrect = np.ones(numRespsWanted)*-999
             for i in range(numRespsWanted): #scored and printed to dataFile in left first, right second order even if collected in different order
@@ -774,7 +782,7 @@ else: #not staircase
             if exportImages:  #catches one frame of response
                  myWin.getMovieFrame() #I cant explain why another getMovieFrame, and core.wait is needed
                  framesSaved +=1; core.wait(.1)
-                 myWin.saveMovieFrames('exported/frames.mov')  
+                 myWin.saveMovieFrames('images_sounds_movies/frames.png') #mov not currently supported 
                  expStop=True
             core.wait(.1)
             if feedback: play_high_tone_correct_low_incorrect(correct, passThisTrial=False)
@@ -798,7 +806,7 @@ else: #not staircase
                              if key in ['space','ESCAPE']: 
                                 waiting=False
                              if key in ['ESCAPE']:
-                                expStop = False
+                                expStop = True
                     myWin.clearBuffer()
             core.wait(.2); time.sleep(.2)
         #end main trials loop
