@@ -14,7 +14,7 @@ except ImportError:
 try:
     import stringResponse
 except ImportError:
-    print('Could not import strongResponse.py (you need that file to be in the same directory)')
+    print('Could not import stringResponse.py (you need that file to be in the same directory)')
 
 wordEccentricity=3
 tasks=['T1']; task = tasks[0]
@@ -324,7 +324,9 @@ stimList = []
 cuePositions =  np.array([6,7,8,9,10]) # [4,10,16,22] used in Martini E2, group 2
 for cuePos in cuePositions:
    for rightResponseFirst in [False,True]:
-        stimList.append( {'cuePos':cuePos, 'rightResponseFirst':rightResponseFirst } )
+      for bothWordsFlipped in [False,True]:
+        stimList.append( {'cuePos':cuePos, 'rightResponseFirst':rightResponseFirst,
+                                    'leftStreamFlip':bothWordsFlipped, 'rightStreamFlip':bothWordsFlipped} )
 
 trials = data.TrialHandler(stimList,trialsPerCondition) #constant stimuli method
 trialsForPossibleStaircase = data.TrialHandler(stimList,trialsPerCondition) #independent randomization, just to create random trials for staircase phase
@@ -369,7 +371,7 @@ def wordToIdx(word,wordList):
         
 #print header for data file
 print('experimentPhase\ttrialnum\tsubject\ttask\t',file=dataFile,end='')
-print('noisePercent\t',end='',file=dataFile)
+print('noisePercent\tleftStreamFlip\trightStreamFlip\t',end='',file=dataFile)
 if task=='T1':
     numRespsWanted = 2
 dataFile.write('rightResponseFirst\t')
@@ -382,12 +384,12 @@ for i in range(numRespsWanted):
 print('timingBlips',file=dataFile)
 #end of header
 
-def  oneFrameOfStim( n,cue,seq1,seq2,cueDurFrames,letterDurFrames,ISIframes,cuesPos,textStimuliStream1,textStimuliStream2,
+def  oneFrameOfStim( n,cue,seq1,seq2,cueDurFrames,letterDurFrames,ISIframes,thisTrial,textStimuliStream1,textStimuliStream2,
                                        noise,proportnNoise,allFieldCoords,numNoiseDots ): 
 #defining a function to draw each frame of stim.
 #seq1 is an array of indices corresponding to the appropriate pre-drawn stimulus, contained in textStimuli
   SOAframes = letterDurFrames+ISIframes
-  cueFrames = cuesPos*SOAframes  #cuesPos is global variable
+  cueFrames = thisTrial['cuePos']*SOAframes  #cuesPos is global variable
   stimN = int( np.floor(n/SOAframes) )
   frameOfThisLetter = n % SOAframes #every SOAframes, new letter
   showLetter = frameOfThisLetter < letterDurFrames #if true, it's not time for the blank ISI.  it's still time to draw the letter
@@ -397,16 +399,20 @@ def  oneFrameOfStim( n,cue,seq1,seq2,cueDurFrames,letterDurFrames,ISIframes,cues
     thisStim2Idx = seq2[stimN]
   #so that any timing problems occur just as often for every frame, always draw the letter and the cue, but simply draw it in the bgColor when it's not meant to be on
   cue.setLineColor( bgColor )
+  if type(cueFrames) not in [tuple,list,np.ndarray]: #scalar. But need collection to do loop based on it
+    cueFrames = list([cueFrames])
   for cueFrame in cueFrames: #cheTck whether it's time for any cue
       if n>=cueFrame and n<cueFrame+cueDurFrames:
          cue.setLineColor( cueColor )
 
   if showLetter:
-     textStimuliStream1[thisStimIdx].setColor( letterColor )
-     textStimuliStream2[thisStim2Idx].setColor( letterColor )
+    textStimuliStream1[thisStimIdx].setColor( letterColor )
+    textStimuliStream2[thisStim2Idx].setColor( letterColor )
   else: 
     textStimuliStream1[thisStimIdx].setColor( bgColor )
     textStimuliStream2[thisStim2Idx].setColor( bgColor )
+  textStimuliStream1[thisStimIdx].flipHoriz = thisTrial['leftStreamFlip']
+  textStimuliStream2[thisStim2Idx].flipHoriz = thisTrial['rightStreamFlip']
   textStimuliStream1[thisStimIdx].draw()
   textStimuliStream2[thisStim2Idx].draw()
   cue.draw()
@@ -480,12 +486,12 @@ numTrialsApproxCorrect = 0;
 numTrialsEachCorrect= np.zeros( numRespsWanted )
 numTrialsEachApproxCorrect= np.zeros( numRespsWanted )
 
-def do_RSVP_stim(cuePos, seq1, seq2, proportnNoise,trialN):
+def do_RSVP_stim(thisTrial, seq1, seq2, proportnNoise,trialN):
     #relies on global variables:
     #   textStimuli, logging, bgColor
-    #
+    #  thisTrial should have 'cuePos'
     cuesPos = [] #will contain the positions in the stream of all the cues (targets)
-    cuesPos.append(cuePos)
+    cuesPos.append(thisTrial['cuePos'])
     cuesPos = np.array(cuesPos)
     noise = None; allFieldCoords=None; numNoiseDots=0
     if proportnNoise > 0: #gtenerating noise is time-consuming, so only do it once per trial. Then shuffle noise coordinates for each letter
@@ -514,7 +520,7 @@ def do_RSVP_stim(cuePos, seq1, seq2, proportnNoise,trialN):
     t0 = trialClock.getTime()
 
     for n in range(trialDurFrames): #this is the loop for this trial's stimulus!
-        worked = oneFrameOfStim( n,cue,seq1,seq2,cueDurFrames,letterDurFrames,ISIframes,cuesPos,textStimuliStream1,textStimuliStream2,
+        worked = oneFrameOfStim( n,cue,seq1,seq2,cueDurFrames,letterDurFrames,ISIframes,thisTrial,textStimuliStream1,textStimuliStream2,
                                                      noise,proportnNoise,allFieldCoords,numNoiseDots ) #draw letter and possibly cue and noise on top
         fixationPoint.draw()
         if exportImages:
@@ -723,10 +729,9 @@ else: #not staircase
             msg='Starting main (non-staircase) part of experiment'
             logging.info(msg); print(msg)
         thisTrial = trials.next() #get a proper (non-staircase) trial
-        cuePos = thisTrial['cuePos']
         sequenceStream1, sequenceStream2 = calcAndPredrawStimuli(wordList)
         cuesPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
-                                                                    do_RSVP_stim(cuePos, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
+                                                                    do_RSVP_stim(thisTrial, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)
         #call individually for each response
         expStop = list(); passThisTrial = list(); responses=list(); responsesAutopilot=list()
@@ -756,7 +761,7 @@ else: #not staircase
                     sequenceStream = sequenceStream1; correctAnswerIdxs = correctAnswerIdxsStream1; 
                 else: sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
                 correct,approxCorrect,responsePosRelative = (
-                        handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot[i],task,sequenceStream,cuesPos[0],correctAnswerIdxs ) )
+                        handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot[i],task,sequenceStream,thisTrial['cuePos'],correctAnswerIdxs ) )
                 eachCorrect[i] = correct
                 eachApproxCorrect[i] = approxCorrect
             print(numCasesInterframeLong, file=dataFile) #timingBlips, last thing recorded on each line of dataFile
