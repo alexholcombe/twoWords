@@ -44,7 +44,6 @@ def collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextSti
                 for f in range(20): time.sleep(.01) #core.wait(1.0/60) #myWin.flip()
            keysPressed = event.getKeys()
            keysPressed = [key.upper() for key in keysPressed] #transform to uppercase
-           print('keysPressed=',keysPressed)
            if autopilot:
                noResponseYet = False
                numResponses = numCharsWanted
