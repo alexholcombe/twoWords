@@ -60,7 +60,7 @@ cueRadius = 7 #6 deg in Goodbourn & Holcombe
 widthPix= 1280 #monitor width in pixels of Agosta
 heightPix= 800 #800 #monitor height in pixels
 monitorwidth = 38.7 #monitor width in cm
-scrn=0 #0 to use main screen, 1 to use external screen connected to computer
+scrn=1 #0 to use main screen, 1 to use external screen connected to computer
 fullscr=True #True to use fullscreen, False to not. Timing probably won't be quite right if fullscreen = False
 allowGUI = False
 if demo: monitorwidth = 23#18.0
@@ -81,7 +81,7 @@ print('pixelperdegree=',pixelperdegree)
 # create a dialog from dictionary 
 infoFirst = { 'Do staircase (only)': False, 'Check refresh etc':False, 'Fullscreen (timing errors if not)': False, 'Screen refresh rate': 60 }
 OK = gui.DlgFromDict(dictionary=infoFirst, 
-    title='AB experiment OR staircase to find thresh noise level for T1 performance criterion', 
+    title='Dual-RSVP experiment OR staircase to find thresh noise level for performance criterion', 
     order=['Do staircase (only)', 'Check refresh etc', 'Fullscreen (timing errors if not)'], 
     tip={'Check refresh etc': 'To confirm refresh rate and that can keep up, at least when drawing a grating'},
     #fixed=['Check refresh etc'])#this attribute can't be changed by the user
@@ -101,7 +101,7 @@ if quitFinder:
     os.system(shellCmd)
 
 #letter size 2.5 deg
-SOAms = 233 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
+SOAms = 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
 #Minimum SOAms should be 84  because any shorter, I can't always notice the second ring when lag1.   71 in Martini E2 and E1b (actually he used 66.6 but that's because he had a crazy refresh rate of 90 Hz)
 letterDurMs = 80 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
 
@@ -283,12 +283,12 @@ def calcAndPredrawStimuli(wordList):
        textStimulusStream1 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging)
        textStimulusStream2 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging)
        textStimulusStream1.setPos([-wordEccentricity,0]) #left
-       textStimuliStream1.append(textStimulusStream1)
+       textStimuliStream1.append(textStimulusStream1) #add to list of text stimuli that comprise  stream 1
        textStimulusStream2.setPos([wordEccentricity,0]) #right
-       textStimuliStream2.append(textStimulusStream2)
+       textStimuliStream2.append(textStimulusStream2)  #add to list of text stimuli
 
     idxsStream1 = idxsIntoWordList #first RSVP stream
-    np.random.shuffle(idxsIntoWordList)
+    np.random.shuffle(idxsIntoWordList) 
     idxsStream2 = copy.deepcopy(idxsIntoWordList)
     np.random.shuffle(idxsStream2)
     return idxsStream1, idxsStream2
