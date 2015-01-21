@@ -37,6 +37,7 @@ timeAndDateStr = time.strftime("%d%b%Y_%H-%M", time.localtime())
 showRefreshMisses=True #flicker fixation at refresh rate, to visualize if frames missed
 feedback=True
 autoLogging=False
+refreshRate = 60.;  #100
 if demo:
     refreshRate = 60.;  #100
 
@@ -79,7 +80,7 @@ pixelperdegree = widthPix/ (atan(monitorwidth/viewdist) /np.pi*180)
 print('pixelperdegree=',pixelperdegree)
     
 # create a dialog from dictionary 
-infoFirst = { 'Do staircase (only)': False, 'Check refresh etc':False, 'Fullscreen (timing errors if not)': False, 'Screen refresh rate': 60 }
+infoFirst = { 'Do staircase (only)': False, 'Check refresh etc':False, 'Fullscreen (timing errors if not)': False, 'Screen refresh rate':refreshRate }
 OK = gui.DlgFromDict(dictionary=infoFirst, 
     title='Dual-RSVP experiment OR staircase to find thresh noise level for performance criterion', 
     order=['Do staircase (only)', 'Check refresh etc', 'Fullscreen (timing errors if not)'], 
@@ -309,7 +310,7 @@ fixatnNoiseTexture = np.round( np.random.rand(fixSizePix/4,fixSizePix/4) ,0 )   
 
 fixation= visual.PatchStim(myWin, tex=fixatnNoiseTexture, size=(fixSizePix,fixSizePix), units='pix', mask='circle', interpolate=False, autoLog=False)
 fixationBlank= visual.PatchStim(myWin, tex= -1*fixatnNoiseTexture, size=(fixSizePix,fixSizePix), units='pix', mask='circle', interpolate=False, autoLog=False) #reverse contrast
-fixationPoint= visual.PatchStim(myWin,tex='none',colorSpace='rgb',color=(1,1,1),size=10,units='pix',autoLog=autoLogging)
+fixationPoint= visual.PatchStim(myWin,tex='none',colorSpace='rgb',color=(1,1,1),size=4,units='pix',autoLog=autoLogging)
 
 respPromptStim = visual.TextStim(myWin,pos=(0, -.9),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
 acceptTextStim = visual.TextStim(myWin,pos=(0, -.8),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
@@ -813,11 +814,15 @@ if expStop:
     print(msg); logging.error(msg)
 
 if not doStaircase and (nDoneMain >0):
-    print('Of ',nDoneMain,' trials, on ',numTrialsCorrect*1.0/nDoneMain*100., '% of all trials all targets reported exactly correct',sep='')
-    print('All targets approximately correct in ',round(numTrialsApproxCorrect*1.0/nDoneMain*100,1),'% of trials',sep='')
+    msg = 'Of ' + str(nDoneMain)+' trials, on '+str(numTrialsCorrect*1.0/nDoneMain*100.)+'% of all trials all targets reported exactly correct'
+    print(msg); logging.info(msg)
+    msg= 'All targets approximately correct in '+ str( round(numTrialsApproxCorrect*1.0/nDoneMain*100,1)) + '% of trials'
+    print(msg); logging.info(msg)
     for i in range(numRespsWanted):
-        print('stream',i,': ',round(numTrialsEachCorrect[i]*1.0/nDoneMain*100.,2), '% correct',sep='')
-        print('stream',i,': ',round(numTrialsEachApproxCorrect[i]*1.0/nDoneMain*100,2),'% approximately correct',sep='')
+        msg = 'stream'+str(i)+': '+str( round(numTrialsEachCorrect[i]*1.0/nDoneMain*100.,2) ) + '% correct'
+        print(msg); logging.info(msg)
+        msg = 'stream' + str(i) + ': '+ str( round(numTrialsEachApproxCorrect[i]*1.0/nDoneMain*100,2) ) +'% approximately correct'
+        print(msg); logging.info(msg)
 
 logging.flush(); dataFile.close()
 myWin.close() #have to close window if want to show a plot
