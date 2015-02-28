@@ -2,7 +2,7 @@
 How quickly are words processed and read? 
 The below ad from Honda (click to watch) affords an interesting perspective on this.
 
-[![Honda RSVP ad](http://img.youtube.com/vi/7MJcWEeft10/20.jpg)](
+[![Honda RSVP ad](http://img.youtube.com/vi/7MJcWEeft10/0.jpg)](
 https://www.youtube.com/watch?v=7MJcWEeft10
 )
 
