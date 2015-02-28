@@ -15,7 +15,7 @@ You should see something like:
 
 If running on a laptop, the frames per second (fps) at bottom left of the screen should be close to 60 most of the time, like >55. It went down to 51 for me briefly because the actual act of taking the screenshot required CPU cycles that would otherwise have been used by Psychopy.
 
-When you open a demo, its code appears in the Coder window. To see an example simple enough so you can understand the code, go to Demos->basic->hello_world.py and run that.
+When you open a demo, its code appears in the Coder window. To see an example simple enough so you can understand the code, try Demos->basic->hello_world.py
 
 Next steps: try [running the twoWords.py program](https://github.com/alexholcombe/twoWords/blob/master/Honours_HowToRun.md)
 

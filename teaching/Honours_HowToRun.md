@@ -17,4 +17,10 @@ The dependent variables spit out (when all the trials are completed, or when you
 * stream1 %correct
 * stream1 %approximately correct
 
-But rather than overall performance, you probably want to see accuracy broken down by one or more of the factors, such as words flipped.
+But rather than overall performance, you probably want to see accuracy broken down by one or more of the factors, such as whether the words are flipped.
+
+To do so, I write code in [R](http://www.r-project.org/). But you may want to use something that doesn't require programming. Like Microsoft Excel.
+
+You'll have to work from the raw data file.
+
+Pivottable
