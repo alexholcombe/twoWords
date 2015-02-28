@@ -10,7 +10,10 @@ To test that it works correctly, double-click on Psychopy and run some of its de
 On the menu bar at top, go to Demos->stimuli->textStimuli.py
 To run it, click the green man at top.
 
-When you open a demo, its code appears in the Coder window. To see an example simple enough to quickly understand, go to Demos->basic->hello_world.py and run that.
+![alt text](https://github.com/alexholcombe/twoWords/blob/master/text_stimuli_screenshot.jpg "Screencap of textStimuli.py run")
+
+
+When you open a demo, its code appears in the Coder window. To see an example simple enough so you can understand the code, go to Demos->basic->hello_world.py and run that.
 
 Next steps: try [running the twoWords.py program](https://github.com/alexholcombe/twoWords/blob/master/Honours_HowToRun.md)
 
