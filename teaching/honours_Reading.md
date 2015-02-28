@@ -25,4 +25,4 @@ But when you force yourself to push :06
 ...
 -->
 
-Molly Potter
+Molly Potter did many of the most important studies of rapid serial processing of printed words.
