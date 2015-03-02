@@ -14,7 +14,7 @@ Actually the experience may be similar, but the act of asking yourself about the
 
 In 'normal' reading - reading words on a page - if you ever ask yourself whether you experienced any particular word, your attention will quickly go back to that word and any more fleeting feeling of the word being gone will immediately be replaced by a full experience of the word.  So we never get to linger on fleeting feelings in normal reading.
 
-I went frame-by-frame through several seconds of the beginning video to calculate that some of the sentences are presented at faster than 6 words per second.
+I went frame-by-frame through several seconds of the beginning video to calculate that some of the sentences are presented at faster than 6 words per second. That's 360 words per minute, not far off normal reading speed.
 
 <!---Limits.
 :02 We all got them. That .. :03 that tells you that you've done all you could do.
