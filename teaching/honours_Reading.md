@@ -12,9 +12,13 @@ Something similar may happen with normal reading. Good readers can read at about
 
 Actually the experience may be similar, but the act of asking yourself about the experience gives different results in the Toyota ad case than in the case of normal reading.
 
-In 'normal' reading - reading words on a page - if you ever ask yourself whether you experienced any particular word, your attention will quickly go back to that word and any more fleeting feeling of the word being gone will immediately be replaced by a full experience of the word.  So we never get to linger on fleeting feelings in normal reading.
+In 'normal' reading - reading words on a page - if you ever ask yourself whether you experienced any particular word, your attention will quickly go back to that word and any more fleeting feeling of the word being gone will immediately be replaced by a full experience of the word.  So we never get to linger on fleeting feelings in normal reading. The feeling in normal reading may be so fleeting that we can't even notice it.
+
+You might expect that we could read normal text faster thanks to seeing and potentially recognizing multiple words simulatneously. 
 
 I went frame-by-frame through several seconds of the beginning video to calculate that some of the sentences are presented at faster than 6 words per second. That's 360 words per minute, not far off normal reading speed.
+
+In fact, most theorists believe that even in normal reading, we only recognize one or at most two words at a time. Our brain can't recognize many words at once, and so from the brain's point of view, normal reading is not very different from reading in this Honda ad.
 
 <!---Limits.
 :02 We all got them. That .. :03 that tells you that you've done all you could do.
