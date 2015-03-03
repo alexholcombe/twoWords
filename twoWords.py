@@ -61,7 +61,7 @@ cueRadius = 7 #6 deg in Goodbourn & Holcombe
 widthPix= 1280 #monitor width in pixels of Agosta
 heightPix= 800 #800 #monitor height in pixels
 monitorwidth = 38.7 #monitor width in cm
-scrn=1 #0 to use main screen, 1 to use external screen connected to computer
+scrn=0 #0 to use main screen, 1 to use external screen connected to computer
 fullscr=True #True to use fullscreen, False to not. Timing probably won't be quite right if fullscreen = False
 allowGUI = False
 if demo: monitorwidth = 23#18.0
