@@ -1,6 +1,6 @@
 #Alex Holcombe alex.holcombe@sydney.edu.au
 #See the github repository for more information: https://github.com/alexholcombe/twoWords
-from __future__ import print_function
+from __future__ import print_function #use python3 style print
 from psychopy import monitors, visual, event, data, logging, core, sound, gui
 import psychopy.info
 import numpy as np
@@ -18,10 +18,10 @@ except ImportError:
 
 wordEccentricity=3
 tasks=['T1']; task = tasks[0]
-#THINGS THAT COULD PREVENT SUCCESS ON A STRANGE MACHINE
+#THINGS THAT COULD PREVENT SUCCESS ON A NEW MACHINE
 #same screen or external screen? Set scrn=0 if one screen. scrn=1 means display stimulus on second screen.
 #widthPix, heightPix
-quitFinder = False #if checkRefreshEtc, quitFinder becomes True
+quitFinder = False #if checkRefreshEtc, quitFinder becomes True.
 autopilot=False
 demo=False #False
 exportImages= False #quits after one trial
@@ -208,7 +208,7 @@ if checkRefreshEtc and (not demo) and (myWinRes != [widthPix,heightPix]).any():
 myDlg.addText('Note: to abort press ESC at a trials response screen', color=[-1.,1.,-1.]) # color='DimGrey') color names stopped working along the way, for unknown reason
 myDlg.show()
 
-if myDlg.OK: #unpack information from dialogue box
+if myDlg.OK: #unpack information entered in dialogue box
    thisInfo = myDlg.data #this will be a list of data returned from each field added in order
    if not autopilot:
        name=thisInfo[dlgLabelsOrdered.index('subject')]
@@ -235,9 +235,9 @@ else:
 if not demo: 
     allowGUI = False
 
-myWin = openMyStimWindow()
-#set up output data file, log file,  copy of program code, and logging
-infix = ''
+myWin = openMyStimWindow() #reopen stim window. Had to close test window to allow for dialogue boxes
+#set up output data file, log file, copy of program code, and logging
+infix = '' #part of the filenames
 if doStaircase:
     infix = 'staircase_'
 fileName = os.path.join(dataDir, subject + '_' + infix+ timeAndDateStr)
@@ -827,3 +827,7 @@ if not doStaircase and (nDoneMain >0):
 
 logging.flush(); dataFile.close()
 myWin.close() #have to close window if want to show a plot
+if quitFinder:
+        applescript="\'tell application \"Finder\" to launch\'" #turn Finder back on
+        shellCmd = 'osascript -e '+applescript
+        os.system(shellCmd)

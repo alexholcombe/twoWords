@@ -1,5 +1,5 @@
 #Alex Holcombe alex.holcombe@sydney.edu.au
-#See the github repository for more information: https://github.com/alexholcombe/twoWords
+#Modified by Kim Ransley from the twoWords.py program at the github repository: https://github.com/alexholcombe/twoWords
 from __future__ import print_function
 from psychopy import monitors, visual, event, data, logging, core, sound, gui
 import psychopy.info
