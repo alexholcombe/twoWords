@@ -16,7 +16,7 @@ try:
 except ImportError:
     print('Could not import stringResponse.py (you need that file to be in the same directory)')
 
-wordEccentricity=3
+wordEccentricity=3 #degrees of visual angle away from the fixation point
 tasks=['T1']; task = tasks[0]
 #THINGS THAT COULD PREVENT SUCCESS ON A NEW MACHINE
 #same screen or external screen? Set scrn=0 if one screen. scrn=1 means display stimulus on second screen.
@@ -53,6 +53,7 @@ lettersUnparsed = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".upper()
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
     wordList[i] = wordList[i].replace(" ", "") #delete spaces
+#Later on, this list will be randomly permuted for each trial
 
 bgColor = [-.7,-.7,-.7] # [-1,-1,-1]
 cueColor = [1.,1.,1.]
@@ -274,24 +275,28 @@ logging.flush()
 
 textStimuliStream1 = list()
 textStimuliStream2 = list() #used for second, simultaneous RSVP stream
-def calcAndPredrawStimuli(wordList):
+def calcAndPredrawStimuli(wordList,thisTrial): #Called before each trial 
     if len(wordList) < numWordsInStream:
         print('Error! Your word list must have at least ',numWordsInStream,'strings')
-    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list
+    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
     print('wordList=',wordList)
     for i in range(0,numWordsInStream): #draw the words that will be used on this trial, the first 26 of the shuffled list
        word = wordList[ i ]  #     #[ idxsIntoWordList[i] ]
        #flipHoriz, flipVert  textStim http://www.psychopy.org/api/visual/textstim.html
+       #Create one bucket of words for the left stream
        textStimulusStream1 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging) 
+       #Create a bucket of words for the right stream
        textStimulusStream2 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging)
        textStimulusStream1.setPos([-wordEccentricity,0]) #left
        textStimuliStream1.append(textStimulusStream1) #add to list of text stimuli that comprise  stream 1
        textStimulusStream2.setPos([wordEccentricity,0]) #right
-       textStimuliStream2.append(textStimulusStream2)  #add to list of text stimuli
-
+       textStimuliStream2.append(textStimulusStream2)  #add to list of text stimuli that comprise stream 2
+       #If you are Joel or someone else who needs to mess with the stream conditional on the cue position, this is probably where we are going to do it
+       
+    #Use these buckets by pulling out the drawn words in the order you want them. For now, just create the order you want.
     idxsStream1 = idxsIntoWordList #first RSVP stream
-    np.random.shuffle(idxsIntoWordList) 
-    idxsStream2 = copy.deepcopy(idxsIntoWordList)
+    np.random.shuffle(idxsIntoWordList) #0,1,2,3,4,5,... -> randomly permuted 3,2,5,...
+    idxsStream2 = copy.deepcopy(idxsIntoWordList)  #make a copy for the right stream, and permute them on the next list
     np.random.shuffle(idxsStream2)
     return idxsStream1, idxsStream2
     
@@ -326,8 +331,8 @@ clickSound, badKeySound = stringResponse.setupSoundsForResponse()
 
 screenshot= False; screenshotDone = False
 stimList = []
-#SETTING THE CONDITIONS
-cuePositions =  np.array([6,7,8,9,10]) # [4,10,16,22] used in Martini E2, group 2
+#SETTING THE CONDITIONS, This implements the full factorial design!
+cuePositions =  np.array([10,11,12,13,14])
 for cuePos in cuePositions:
    for rightResponseFirst in [False,True]:
       for bothWordsFlipped in [False,True]:
@@ -665,7 +670,7 @@ if doStaircase:
                 print('stopping because staircase.next() returned a StopIteration, which it does when it is finished')
                 break #break out of the trials loop
         #print('staircaseTrialN=',staircaseTrialN)
-        idxsStream1, idxsStream2 = calcAndPredrawStimuli(wordList)
+        idxsStream1, idxsStream2 = calcAndPredrawStimuli(wordList,staircaseTrials)
         cuesPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                         do_RSVP_stim(cuePos, idxsStream1, idxsStream2, noisePercent/100.,staircaseTrialN)
         numCasesInterframeLong = timingCheckAndLog(ts,staircaseTrialN)
@@ -737,7 +742,7 @@ else: #not staircase
             msg='Starting main (non-staircase) part of experiment'
             logging.info(msg); print(msg)
         thisTrial = trials.next() #get a proper (non-staircase) trial
-        sequenceStream1, sequenceStream2 = calcAndPredrawStimuli(wordList)
+        sequenceStream1, sequenceStream2 = calcAndPredrawStimuli(wordList,thisTrial)
         cuesPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                                                     do_RSVP_stim(thisTrial, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)
