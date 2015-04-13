@@ -21,6 +21,12 @@ But rather than overall performance, you probably want to see accuracy broken do
 
 To do so, I write code in [R](http://www.r-project.org/). But you may want to use something that doesn't require programming. Like Microsoft Excel.
 
-You'll have to work from the raw data file.
+You'll have to work from the raw data file. Each time you run the program, it actually produces 3 files.  The beginning of the name of each file indicates the participant's name, date, and time.
+
+* The .py file is just a copy of the program that generated the data (in case you change the program later, you will have this for reference)
+* The .log file contains various info and diagnostics about how the session went.
+* The .txt file is the actual data.
+
+Its format is tab-delimited columns, with one row for each trial.
 
 Pivottable

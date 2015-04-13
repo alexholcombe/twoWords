@@ -309,18 +309,21 @@ fixColor = [1,1,1]
 if exportImages: fixColor= [0,0,0]
 fixatnNoiseTexture = np.round( np.random.rand(fixSizePix/4,fixSizePix/4) ,0 )   *2.0-1 #Can counterphase flicker  noise texture to create salient flicker if you break fixation
 
+#Construct the fixation point.
 fixation= visual.PatchStim(myWin, tex=fixatnNoiseTexture, size=(fixSizePix,fixSizePix), units='pix', mask='circle', interpolate=False, autoLog=False)
 fixationBlank= visual.PatchStim(myWin, tex= -1*fixatnNoiseTexture, size=(fixSizePix,fixSizePix), units='pix', mask='circle', interpolate=False, autoLog=False) #reverse contrast
 fixationPoint= visual.PatchStim(myWin,tex='none',colorSpace='rgb',color=(1,1,1),size=4,units='pix',autoLog=autoLogging)
-
+#Construct the holders for the experiment text that will appear on screen
 respPromptStim = visual.TextStim(myWin,pos=(0, -.9),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
 acceptTextStim = visual.TextStim(myWin,pos=(0, -.8),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
 acceptTextStim.setText('Hit ENTER to accept. Backspace to edit')
 respStim = visual.TextStim(myWin,pos=(0,0),colorSpace='rgb',color=(1,1,0),alignHoriz='center', alignVert='center',height=3,units='deg',autoLog=autoLogging)
-clickSound, badKeySound = stringResponse.setupSoundsForResponse()
 requireAcceptance = False
 nextText = visual.TextStim(myWin,pos=(0, .1),colorSpace='rgb',color = (1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
 NextRemindCountText = visual.TextStim(myWin,pos=(0,.2),colorSpace='rgb',color= (1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
+
+clickSound, badKeySound = stringResponse.setupSoundsForResponse()
+
 screenshot= False; screenshotDone = False
 stimList = []
 #SETTING THE CONDITIONS
@@ -350,7 +353,7 @@ def numberToLetter(number): #0 = A, 25 = Z
 
 def letterToNumber(letter): #A = 0, Z = 25
     #if it's not really a letter, return -999
-    #HOW CAN I GENERICALLY TEST FOR LENGTH. EVEN IN CASE OF A NUMBER THAT' SNOT PART OF AN ARRAY?
+    #HOW CAN I GENERICALLY TEST FOR LENGTH. EVEN IN CASE OF A NUMBER THAT'S NOT PART OF AN ARRAY?
     try:
         #if len(letter) > 1:
         #    return (-999)
