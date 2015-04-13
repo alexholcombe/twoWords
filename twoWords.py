@@ -292,6 +292,7 @@ def calcAndPredrawStimuli(wordList,thisTrial): #Called before each trial
        textStimulusStream2.setPos([wordEccentricity,0]) #right
        textStimuliStream2.append(textStimulusStream2)  #add to list of text stimuli that comprise stream 2
        #If you are Joel or someone else who needs to mess with the stream conditional on the cue position, this is probably where we are going to do it
+       #pseudoHomophonePos = thisTrial['cuePos'] -1
        
     #Use these buckets by pulling out the drawn words in the order you want them. For now, just create the order you want.
     idxsStream1 = idxsIntoWordList #first RSVP stream
