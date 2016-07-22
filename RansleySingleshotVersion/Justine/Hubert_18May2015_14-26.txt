@@ -1,0 +1,17 @@
+experimentPhase	trialnum	subject	task	noisePercent	leftStreamFlip	rightStreamFlip	rightResponseFirst	cuePos0	answer0	response0	correct0	timingBlips
+main	0 	Hubert 	 T1 	 0.0 	False 	False 	False 	0 	BUYS 	BUYS 	1 	0
+main	1 	Hubert 	 T1 	 0.0 	True 	True 	True 	0 	BRED 	HHHHHH 	0 	1
+main	2 	Hubert 	 T1 	 0.0 	True 	True 	False 	0 	GRAB 	GRAB 	1 	0
+main	3 	Hubert 	 T1 	 0.0 	False 	False 	True 	0 	SULKS 	SULKS 	1 	0
+main	4 	Hubert 	 T1 	 0.0 	False 	False 	False 	0 	FAIL 	FAIL 	1 	0
+main	5 	Hubert 	 T1 	 0.0 	True 	True 	True 	0 	MINUET 	MINUET 	1 	0
+main	6 	Hubert 	 T1 	 0.0 	False 	False 	True 	0 	BUYS 	ADFSDF 	0 	0
+main	7 	Hubert 	 T1 	 0.0 	True 	True 	False 	0 	BURST 	BURST 	1 	0
+main	8 	Hubert 	 T1 	 0.0 	False 	False 	False 	0 	WART 	WSDFAD 	0 	0
+main	9 	Hubert 	 T1 	 0.0 	False 	False 	True 	0 	BAIT 	BAIT 	1 	0
+main	10 	Hubert 	 T1 	 0.0 	True 	True 	True 	0 	BURST 	JJJJJJ 	0 	0
+main	11 	Hubert 	 T1 	 0.0 	True 	True 	False 	0 	FALSE 	FALSE 	1 	0
+main	12 	Hubert 	 T1 	 0.0 	True 	True 	True 	0 	FORTH 	FORTH 	1 	1
+main	13 	Hubert 	 T1 	 0.0 	False 	False 	True 	0 	COAST 	COAST 	1 	0
+main	14 	Hubert 	 T1 	 0.0 	False 	False 	False 	0 	DAIRY 	DAIRY 	1 	0
+main	15 	Hubert 	 T1 	 0.0 	True 	True 	False 	0 	CLAM 	CLAM 	1 	0

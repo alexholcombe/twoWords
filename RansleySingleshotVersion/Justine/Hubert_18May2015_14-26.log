@@ -1,0 +1,337 @@
+4.9828 	WARNING 	Could not load the desired click sound file, instead using manually created inferior click
+4.9830 	EXP 	Set  sound=D
+5.0748 	EXP 	Set  sound=D
+5.0749 	EXP 	Set  sound=A
+5.0859 	EXP 	Created sequence: random, trialTypes=8, nReps=20, seed=None
+5.1747 	EXP 	Created sequence: random, trialTypes=8, nReps=20, seed=None
+5.1750 	INFO 	numtrials=160 and each trialDurFrames=29 or 483.333333333 ms  task=T1
+5.1763 	INFO 	Experiment will have 160 trials. Letters will be drawn with superposed noise of 0.00%
+5.1763 	INFO 	Starting main (non-staircase) part of experiment
+5.1766 	EXP 	New trial (rep=0, index=0): {'wordList': 2, 'rightResponseFirst': False, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+7.1424 	EXP 	window1: recordFrameIntervals = False
+8.2318 	DATA 	Keypress: b
+8.2426 	EXP 	Sound  started
+8.3437 	DATA 	Keypress: u
+8.3441 	EXP 	Sound  started
+8.5318 	DATA 	Keypress: y
+8.5435 	EXP 	Sound  started
+8.6427 	DATA 	Keypress: s
+8.6431 	EXP 	Sound  started
+9.4267 	DATA 	Keypress: space
+9.4271 	EXP 	Sound  started
+9.5764 	DATA 	Keypress: space
+9.5768 	EXP 	Sound  started
+9.6961 	EXP 	Set  sound=G
+9.6966 	EXP 	Set  sound=F
+9.6966 	EXP 	Set Sound  volume=0.900
+9.6966 	EXP 	Set Sound  volume=1.000
+9.6966 	EXP 	Sound  started
+10.1004 	EXP 	New trial (rep=0, index=1): {'wordList': 1, 'rightResponseFirst': True, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+12.0107 	EXP 	window1: recordFrameIntervals = False
+12.3267 	ERROR 	trialnum=1 ERROR,1 frames were longer than 20.8 ms apparently screen refreshes skipped, interframe durs were:[ 23.6] and was these frames: [0]
+12.3271 	INFO 	flankers also=[ 23.6   9.1]
+13.4330 	DATA 	Keypress: h
+13.4436 	EXP 	Sound  started
+14.1769 	DATA 	Keypress: backspace
+14.7448 	DATA 	Keypress: h
+14.7452 	EXP 	Sound  started
+15.0612 	DATA 	Keypress: h
+15.0615 	EXP 	Sound  started
+15.2267 	DATA 	Keypress: h
+15.2271 	EXP 	Sound  started
+15.3677 	DATA 	Keypress: h
+15.3770 	EXP 	Sound  started
+15.5019 	DATA 	Keypress: h
+15.5107 	EXP 	Sound  started
+15.6493 	DATA 	Keypress: h
+15.6603 	EXP 	Sound  started
+15.7800 	EXP 	Set  sound=G
+15.7805 	EXP 	Set  sound=F
+15.7805 	EXP 	Set Sound  volume=0.900
+15.7805 	EXP 	Set Sound  volume=1.000
+15.7805 	EXP 	Sound  started
+16.1862 	EXP 	New trial (rep=0, index=2): {'wordList': 2, 'rightResponseFirst': False, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+17.9774 	EXP 	window1: recordFrameIntervals = False
+18.9617 	DATA 	Keypress: g
+18.9621 	EXP 	Sound  started
+19.1617 	DATA 	Keypress: r
+19.1622 	EXP 	Sound  started
+19.2849 	DATA 	Keypress: a
+19.2938 	EXP 	Sound  started
+19.4278 	DATA 	Keypress: b
+19.4282 	EXP 	Sound  started
+19.9331 	DATA 	Keypress: space
+19.9341 	EXP 	Sound  started
+20.0784 	DATA 	Keypress: space
+20.0788 	EXP 	Sound  started
+20.1967 	EXP 	Set  sound=G
+20.1972 	EXP 	Set  sound=F
+20.1972 	EXP 	Set Sound  volume=0.900
+20.1972 	EXP 	Set Sound  volume=1.000
+20.1972 	EXP 	Sound  started
+20.5996 	EXP 	New trial (rep=0, index=3): {'wordList': 1, 'rightResponseFirst': True, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+22.3280 	EXP 	window1: recordFrameIntervals = False
+22.8169 	DATA 	Keypress: s
+22.8289 	EXP 	Sound  started
+23.2515 	DATA 	Keypress: u
+23.2621 	EXP 	Sound  started
+23.3782 	DATA 	Keypress: l
+23.3786 	EXP 	Sound  started
+23.4790 	DATA 	Keypress: k
+23.4794 	EXP 	Sound  started
+23.6359 	DATA 	Keypress: s
+23.6449 	EXP 	Sound  started
+23.8459 	DATA 	Keypress: space
+23.8462 	EXP 	Sound  started
+23.9685 	EXP 	Set  sound=G
+23.9691 	EXP 	Set  sound=F
+23.9691 	EXP 	Set Sound  volume=0.900
+23.9691 	EXP 	Set Sound  volume=1.000
+23.9691 	EXP 	Sound  started
+23.9750 	DATA 	Keypress: space
+24.3754 	EXP 	New trial (rep=0, index=4): {'wordList': 1, 'rightResponseFirst': False, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+26.3118 	EXP 	window1: recordFrameIntervals = False
+27.0286 	DATA 	Keypress: f
+27.0290 	EXP 	Sound  started
+27.1460 	DATA 	Keypress: a
+27.1463 	EXP 	Sound  started
+27.2192 	DATA 	Keypress: i
+27.2294 	EXP 	Sound  started
+27.2670 	DATA 	Keypress: l
+27.2783 	EXP 	Sound  started
+29.0790 	DATA 	Keypress: space
+29.0795 	EXP 	Sound  started
+29.2128 	DATA 	Keypress: space
+29.2131 	EXP 	Sound  started
+29.3315 	EXP 	Set  sound=G
+29.3319 	EXP 	Set  sound=F
+29.3319 	EXP 	Set Sound  volume=0.900
+29.3319 	EXP 	Set Sound  volume=1.000
+29.3319 	EXP 	Sound  started
+29.7366 	EXP 	New trial (rep=0, index=5): {'wordList': 2, 'rightResponseFirst': True, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+31.4117 	EXP 	window1: recordFrameIntervals = False
+32.1635 	DATA 	Keypress: m
+32.1639 	EXP 	Sound  started
+32.3633 	DATA 	Keypress: i
+32.3636 	EXP 	Sound  started
+32.4364 	DATA 	Keypress: n
+32.4459 	EXP 	Sound  started
+37.9041 	DATA 	Keypress: u
+37.9141 	EXP 	Sound  started
+38.0212 	DATA 	Keypress: e
+38.0304 	EXP 	Sound  started
+38.1394 	DATA 	Keypress: t
+38.1480 	EXP 	Sound  started
+38.2718 	EXP 	Set  sound=G
+38.2722 	EXP 	Set  sound=F
+38.2722 	EXP 	Set Sound  volume=0.900
+38.2722 	EXP 	Set Sound  volume=1.000
+38.2722 	EXP 	Sound  started
+38.6743 	EXP 	New trial (rep=0, index=6): {'wordList': 2, 'rightResponseFirst': True, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+40.5469 	EXP 	window1: recordFrameIntervals = False
+41.4474 	DATA 	Keypress: a
+41.4478 	EXP 	Sound  started
+41.4715 	DATA 	Keypress: s
+41.4718 	DATA 	Keypress: d
+41.4804 	EXP 	Sound  started
+41.5376 	DATA 	Keypress: f
+41.5484 	EXP 	Sound  started
+41.6472 	DATA 	Keypress: a
+41.6477 	DATA 	Keypress: s
+41.6479 	EXP 	Sound  started
+41.6705 	DATA 	Keypress: d
+41.6805 	EXP 	Sound  started
+41.7047 	DATA 	Keypress: grave
+41.7136 	EXP 	Sound  started
+41.7812 	DATA 	Keypress: f
+41.7815 	EXP 	Sound  started
+41.8540 	DATA 	Keypress: a
+41.8700 	DATA 	Keypress: s
+41.9002 	EXP 	Set  sound=G
+41.9007 	EXP 	Set  sound=F
+41.9007 	EXP 	Set Sound  volume=0.900
+41.9007 	EXP 	Set Sound  volume=1.000
+41.9007 	EXP 	Sound  started
+42.3056 	EXP 	New trial (rep=0, index=7): {'wordList': 1, 'rightResponseFirst': False, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+44.1973 	EXP 	window1: recordFrameIntervals = False
+44.9039 	DATA 	Keypress: b
+44.9140 	EXP 	Sound  started
+45.0034 	DATA 	Keypress: u
+45.0138 	EXP 	Sound  started
+45.0862 	DATA 	Keypress: r
+45.0973 	EXP 	Sound  started
+45.2153 	DATA 	Keypress: s
+45.2156 	EXP 	Sound  started
+45.3049 	DATA 	Keypress: t
+45.3149 	EXP 	Sound  started
+45.8064 	DATA 	Keypress: space
+45.8142 	EXP 	Sound  started
+45.9337 	EXP 	Set  sound=G
+45.9341 	EXP 	Set  sound=F
+45.9341 	EXP 	Set Sound  volume=0.900
+45.9341 	EXP 	Set Sound  volume=1.000
+45.9341 	EXP 	Sound  started
+46.3374 	EXP 	New trial (rep=1, index=0): {'wordList': 1, 'rightResponseFirst': False, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+48.3648 	EXP 	window1: recordFrameIntervals = False
+49.4151 	DATA 	Keypress: w
+49.4155 	EXP 	Sound  started
+49.4380 	DATA 	Keypress: a
+49.4384 	DATA 	Keypress: s
+49.4485 	EXP 	Sound  started
+49.5059 	DATA 	Keypress: d
+49.5148 	EXP 	Sound  started
+49.5388 	DATA 	Keypress: f
+49.5490 	EXP 	Sound  started
+49.6321 	DATA 	Keypress: a
+49.6325 	EXP 	Sound  started
+49.6727 	DATA 	Keypress: grave
+49.6815 	EXP 	Sound  started
+49.7158 	DATA 	Keypress: d
+49.7160 	EXP 	Sound  started
+49.7345 	DATA 	Keypress: z
+49.7657 	DATA 	Keypress: f
+49.8346 	EXP 	Set  sound=G
+49.8351 	EXP 	Set  sound=F
+49.8352 	EXP 	Set Sound  volume=0.900
+49.8352 	EXP 	Set Sound  volume=1.000
+49.8352 	EXP 	Sound  started
+50.2413 	EXP 	New trial (rep=1, index=1): {'wordList': 1, 'rightResponseFirst': True, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+51.9154 	EXP 	window1: recordFrameIntervals = False
+52.5725 	DATA 	Keypress: b
+52.5816 	EXP 	Sound  started
+52.8489 	DATA 	Keypress: a
+52.8493 	EXP 	Sound  started
+52.9485 	DATA 	Keypress: i
+52.9489 	EXP 	Sound  started
+53.0235 	DATA 	Keypress: t
+53.0326 	EXP 	Sound  started
+53.2995 	DATA 	Keypress: space
+53.2999 	EXP 	Sound  started
+53.4243 	DATA 	Keypress: space
+53.4324 	EXP 	Sound  started
+53.5538 	EXP 	Set  sound=G
+53.5542 	EXP 	Set  sound=F
+53.5542 	EXP 	Set Sound  volume=0.900
+53.5542 	EXP 	Set Sound  volume=1.000
+53.5542 	EXP 	Sound  started
+53.9579 	EXP 	New trial (rep=1, index=2): {'wordList': 1, 'rightResponseFirst': True, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+55.5821 	EXP 	window1: recordFrameIntervals = False
+58.4994 	DATA 	Keypress: j
+58.4998 	EXP 	Sound  started
+58.6660 	DATA 	Keypress: j
+58.6664 	EXP 	Sound  started
+58.8000 	DATA 	Keypress: j
+58.8003 	EXP 	Sound  started
+58.9165 	DATA 	Keypress: j
+58.9169 	EXP 	Sound  started
+59.0564 	DATA 	Keypress: j
+59.0661 	EXP 	Sound  started
+59.1995 	DATA 	Keypress: j
+59.1999 	EXP 	Sound  started
+59.3183 	EXP 	Set  sound=G
+59.3187 	EXP 	Set  sound=F
+59.3188 	EXP 	Set Sound  volume=0.900
+59.3188 	EXP 	Set Sound  volume=1.000
+59.3188 	EXP 	Sound  started
+59.7237 	EXP 	New trial (rep=1, index=3): {'wordList': 1, 'rightResponseFirst': False, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+61.4662 	EXP 	window1: recordFrameIntervals = False
+62.1500 	DATA 	Keypress: f
+62.1504 	EXP 	Sound  started
+62.2827 	DATA 	Keypress: a
+62.2832 	EXP 	Sound  started
+62.4072 	DATA 	Keypress: l
+62.4162 	EXP 	Sound  started
+62.6341 	DATA 	Keypress: s
+62.6344 	EXP 	Sound  started
+62.7338 	DATA 	Keypress: e
+62.7341 	EXP 	Sound  started
+63.3843 	DATA 	Keypress: space
+63.3846 	EXP 	Sound  started
+63.5032 	EXP 	Set  sound=G
+63.5036 	EXP 	Set  sound=F
+63.5036 	EXP 	Set Sound  volume=0.900
+63.5036 	EXP 	Set Sound  volume=1.000
+63.5036 	EXP 	Sound  started
+63.9050 	EXP 	New trial (rep=1, index=4): {'wordList': 2, 'rightResponseFirst': True, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+65.8831 	EXP 	window1: recordFrameIntervals = False
+66.2006 	ERROR 	trialnum=12 ERROR,1 frames were longer than 20.8 ms apparently screen refreshes skipped, interframe durs were:[ 22.1] and was these frames: [23]
+66.2012 	INFO 	flankers also=[ 17.4  22.1  11.1]
+66.3344 	DATA 	Keypress: f
+66.3348 	EXP 	Sound  started
+66.6236 	DATA 	Keypress: o
+66.6337 	EXP 	Sound  started
+66.7171 	DATA 	Keypress: r
+66.7174 	EXP 	Sound  started
+66.8553 	DATA 	Keypress: t
+66.8677 	EXP 	Sound  started
+66.9914 	DATA 	Keypress: h
+67.0005 	EXP 	Sound  started
+67.3092 	DATA 	Keypress: space
+67.3170 	EXP 	Sound  started
+67.4369 	EXP 	Set  sound=G
+67.4373 	EXP 	Set  sound=F
+67.4373 	EXP 	Set Sound  volume=0.900
+67.4373 	EXP 	Set Sound  volume=1.000
+67.4374 	EXP 	Sound  started
+67.8408 	EXP 	New trial (rep=1, index=5): {'wordList': 2, 'rightResponseFirst': True, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+69.8178 	EXP 	window1: recordFrameIntervals = False
+70.6176 	DATA 	Keypress: c
+70.6180 	EXP 	Sound  started
+70.7012 	DATA 	Keypress: o
+70.7016 	EXP 	Sound  started
+70.8011 	DATA 	Keypress: a
+70.8014 	EXP 	Sound  started
+70.8348 	DATA 	Keypress: s
+70.8351 	EXP 	Sound  started
+70.9611 	DATA 	Keypress: t
+70.9673 	EXP 	Sound  started
+71.2177 	DATA 	Keypress: space
+71.2181 	EXP 	Sound  started
+71.3369 	EXP 	Set  sound=G
+71.3375 	EXP 	Set  sound=F
+71.3375 	EXP 	Set Sound  volume=0.900
+71.3375 	EXP 	Set Sound  volume=1.000
+71.3375 	EXP 	Sound  started
+71.7391 	EXP 	New trial (rep=1, index=6): {'wordList': 2, 'rightResponseFirst': False, 'leftStreamFlip': False, 'rightStreamFlip': False, 'cuePos': 0}
+73.5848 	EXP 	window1: recordFrameIntervals = False
+75.7089 	DATA 	Keypress: d
+75.7176 	EXP 	Sound  started
+76.1188 	DATA 	Keypress: a
+76.1192 	EXP 	Sound  started
+76.2349 	DATA 	Keypress: i
+76.2353 	EXP 	Sound  started
+76.3190 	DATA 	Keypress: r
+76.3193 	EXP 	Sound  started
+76.6025 	DATA 	Keypress: y
+76.6028 	EXP 	Sound  started
+77.6687 	DATA 	Keypress: space
+77.6691 	EXP 	Sound  started
+77.7875 	EXP 	Set  sound=G
+77.7879 	EXP 	Set  sound=F
+77.7879 	EXP 	Set Sound  volume=0.900
+77.7879 	EXP 	Set Sound  volume=1.000
+77.7879 	EXP 	Sound  started
+78.1943 	EXP 	New trial (rep=1, index=7): {'wordList': 2, 'rightResponseFirst': False, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+79.8856 	EXP 	window1: recordFrameIntervals = False
+80.5913 	DATA 	Keypress: c
+80.6025 	EXP 	Sound  started
+81.0766 	DATA 	Keypress: l
+81.0856 	EXP 	Sound  started
+81.1859 	DATA 	Keypress: a
+81.1863 	EXP 	Sound  started
+81.2620 	DATA 	Keypress: m
+81.2695 	EXP 	Sound  started
+81.8699 	DATA 	Keypress: space
+81.8703 	EXP 	Sound  started
+82.0112 	DATA 	Keypress: space
+82.0188 	EXP 	Sound  started
+82.1389 	EXP 	Set  sound=G
+82.1395 	EXP 	Set  sound=F
+82.1395 	EXP 	Set Sound  volume=0.900
+82.1395 	EXP 	Set Sound  volume=1.000
+82.1395 	EXP 	Sound  started
+82.5464 	EXP 	New trial (rep=2, index=0): {'wordList': 2, 'rightResponseFirst': False, 'leftStreamFlip': True, 'rightStreamFlip': True, 'cuePos': 0}
+84.1692 	EXP 	window1: recordFrameIntervals = False
+94.9596 	DATA 	Keypress: escape
+94.9876 	INFO 	Finishing at 14:27 on 18 May 2015
+94.9877 	ERROR 	user aborted experiment on keypress with trials done=16 of 161
