@@ -162,9 +162,8 @@ def plotDataAndPsychometricCurve(staircase,fit,descendingPsycho,threshVal):
         pylab.title('Fit failed')
     
     #Use pandas to calculate proportion correct at each level
-    print("hello")
-    print(staircase.data)
-    print(intensLinear)
+    print('staircase.data=',staircase.data)
+    print('intensLinear=',intensLinear)
     df= DataFrame({'intensity': intensLinear, 'response': staircase.data})
     
     #print('df='); print(df) #debug
