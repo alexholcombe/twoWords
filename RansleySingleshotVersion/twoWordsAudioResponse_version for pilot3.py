@@ -160,11 +160,11 @@ def openMyStimWindow(): #make it a function because have to do it several times,
     return myWin
 myWin = openMyStimWindow()
 #identify the hardware microphone in use:
-circle = visual.Circle(myWin, 5, fillColor='grey', lineColor='grey', edges=64, autoLog=autoLogging)
+circle = visual.Circle(myWin, 5, fillColor='grey', lineColor='grey', lineColorSpace='rgb', fillColorSpace='rgb', edges=64, autoLog=autoLogging)
 names, idx = sound.pyo.pa_get_input_devices()
 inp = sound.pyo.pa_get_default_input()
 msg = 'Ensure speaker vol > 0\n\nAny key to start...\n\nUsing input="%s"' % names[idx.index(inp)]
-startMessage = visual.TextStim(myWin, msg, color=letterColor, height=ltrHeight, autoLog=autoLogging)
+startMessage = visual.TextStim(myWin, msg, color=letterColor, colorSpace='rgb', height=ltrHeight, autoLog=autoLogging)
 circle.draw()
 startMessage.draw()
 myWin.flip()
@@ -633,7 +633,7 @@ for counter in range(4):
             print('Unexpected error in wordToIdx with word=',word)
             return (None)
             
-    maxNumRespsWanted = 2
+    maxNumRespsWanted = 1
     
     #print header for data file
     print('experimentPhase\ttrialnum\tsubject\tspeed\t',file=dataFile,end='')
@@ -669,16 +669,16 @@ for counter in range(4):
       cue.setLineColor( bgColor )
       if type(cueFrames) not in [tuple,list,np.ndarray]: #scalar. But need collection to do loop based on it
         cueFrames = list([cueFrames])
-      for cueFrame in cueFrames: #cheTck whether it's time for any cue
+      for cueFrame in cueFrames: #check whether it's time for any cue
           if n>=cueFrame and n<cueFrame+cueDurFrames:
              cue.setLineColor( cueColor )
     
       if showLetter:
-        textStimuliStream1[thisStimIdx].setColor( letterColor )
-        textStimuliStream2[thisStim2Idx].setColor( letterColor )
+        textStimuliStream1[thisStimIdx].setColor( letterColor, 'rgb' )
+        textStimuliStream2[thisStim2Idx].setColor( letterColor, 'rgb' )
       else: 
-        textStimuliStream1[thisStimIdx].setColor( bgColor )
-        textStimuliStream2[thisStim2Idx].setColor( bgColor )
+        textStimuliStream1[thisStimIdx].setColor( bgColor, 'rgb' )
+        textStimuliStream2[thisStim2Idx].setColor( bgColor, 'rgb' )
       textStimuliStream1[thisStimIdx].flipHoriz = thisTrial['leftStreamFlip']
       textStimuliStream2[thisStim2Idx].flipHoriz = thisTrial['rightStreamFlip']
       textStimuliStream1[thisStimIdx].draw()
@@ -696,9 +696,6 @@ for counter in range(4):
     # #######End of function definition that displays the stimuli!!!! #####################################
     #############################################################################################################################
       thisProbe = thisTrial['probe']
-      #if thisProbe=='both':
-      #  numRespsWanted = 1
-      #else: numRespsWanted = 0
       
     cue = visual.Circle(myWin, 
                      radius=cueRadius,#Martini used circles with diameter of 12 deg
@@ -907,10 +904,6 @@ for counter in range(4):
         #end of big stimulus loop
         myWin.setRecordFrameIntervals(False);
         
-        if task=='T1':
-            respPromptStim.setText('What was the underlined word?',log=False)   
-        else: respPromptStim.setText('Error: unexpected task',log=False)
-        
         postCueNumBlobsAway=-999 #doesn't apply to non-tracking and click tracking task
         
         correctAnswerIdxsStream1 = np.array( seq1[cuesPos] )
@@ -1044,7 +1037,12 @@ for counter in range(4):
                     print('stopping because staircase.next() returned a StopIteration, which it does when it is finished')
                     break #break out of the trials loop
             #print('staircaseTrialN=',staircaseTrialN)
-            idxsStream1, idxsStream2 = calcAndPredrawStimuli(wordList1,wordList2)
+            if task=='T1':
+                respPromptStim.setText('Kim did they get it right?',log=False)   
+            else: 
+                respPromptStim.setText('Error: unexpected task',log=False)
+            print('wordList=',wordList1,'wordList2=',wordList2,'staircaseTrialN=',staircaseTrialN)
+            calcAndPredrawStimuli(wordList1,wordList2,staircaseTrialN)
             cuesPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                             do_RSVP_stim(cuePos, idxsStream1, idxsStream2, noisePercent/100.,staircaseTrialN)
             speedupMessages = [   'time after mask until left do_RSVP_stim' +  str( debugClock.getTime() )   ]
@@ -1054,7 +1052,8 @@ for counter in range(4):
             debugClock.reset()
             expStop,passThisTrial,responses,responsesAutopilot = \
                     recordVocalResponseKRedit.recordVocalResponse(idxsStream1, idxsStream2)
-            stringResponse.collectStringResponse(numRespsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,badKeySound,
+            expStop,passThisTrial,responses,responsesAutopilot = \
+                    stringResponse.collectStringResponse(numRespsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,badKeySound,
                                                                                    requireAcceptance,autopilot,responseDebug=False)
             speedupMessages.append([   'collectStringResponse:' +  str( debugClock.getTime() )   ])
             debugClock.reset()
