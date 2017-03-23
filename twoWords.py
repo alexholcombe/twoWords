@@ -206,7 +206,12 @@ if checkRefreshEtc and (not demo) and (myWinRes != [widthPix,heightPix]).any():
     myDlg.addText(msgWrongResolution, color='Red')
     logging.error(msgWrongResolution)
     print(msgWrongResolution)
-myDlg.addText('Note: to abort press ESC at a trials response screen', color=[-1.,1.,-1.]) # color='DimGrey') color names stopped working along the way, for unknown reason
+
+dimGreyForDlgBox = 'DimGrey'
+from distutils.version import LooseVersion
+if LooseVersion(psychopy.__version__) < LooseVersion("1.84.2"):
+    dimGreyForDlgBox = [-1.,1.,-1.] #color names stopped working along the way, for unknown reason
+myDlg.addText('Note: to abort press ESC at a trials response screen', color=dimGreyForDlgBox) # color='DimGrey') color names stopped working along the way, for unknown reason
 myDlg.show()
 
 if myDlg.OK: #unpack information entered in dialogue box
