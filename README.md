@@ -11,5 +11,6 @@ Issues
 
 * Have approximately correct spit out to data file.
 * Add Kim's single-shot code for reading in list of words from a file.
+
 * Add pre-cues.
-* Figure out separation issue
+* Change cue size appropriately. Maybe separate circles in widely-spaced case.
