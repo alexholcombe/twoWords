@@ -46,7 +46,7 @@ prefaceStaircaseNoise = np.array([5,20,20,20, 50,50,50,5,80,80,80,5,95,95,95]) #
 descendingPsycho = True #psychometric function- more noise means worse performance
 threshCriterion = 0.58
 
-numWordsInStream = 6
+numWordsInStream = 20
 wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x  ,y,z" 
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
@@ -278,7 +278,7 @@ logging.flush()
 
 textStimuliStream1 = list()
 textStimuliStream2 = list() #used for second, simultaneous RSVP stream
-def calcAndPredrawStimuli(wordList,cues,thisTrial): #Called before each trial 
+def calcAndPredrawStimuli(wordList,cues, preCues,thisTrial): #Called before each trial 
     #textStimuliStream1 and 2 assumed to be global variables
     if len(wordList) < numWordsInStream:
         print('Error! Your word list must have at least ',numWordsInStream,'strings')
@@ -290,8 +290,12 @@ def calcAndPredrawStimuli(wordList,cues,thisTrial): #Called before each trial
         eccentricity = thisTrial['wordEccentricity']
         if eccentricity < 2:  #kludge to deal with very low separation case where want just one cue - draw them both in the same place
             eccentricity = 0
-        if i==0: cues[i].setPos( [-eccentricity, 0] )
-        else:  cues[i].setPos( [eccentricity, 0] )
+        if i==0: 
+            cues[i].setPos( [-eccentricity, 0] )
+            preCues[i].setPos( [-eccentricity, 0] )
+        else:  
+            cues[i].setPos( [eccentricity, 0] )
+            preCues[i].setPos( [eccentricity, 0] )
     for i in range(0,len(wordList)): #draw all the words. Later, the seq will indicate which one to present on each frame. The seq might be shorter than the wordList
        word = wordList[ i ]
        #flipHoriz, flipVert  textStim http://www.psychopy.org/api/visual/textstim.html
@@ -311,7 +315,7 @@ def calcAndPredrawStimuli(wordList,cues,thisTrial): #Called before each trial
     idxsStream2 = copy.deepcopy(idxsIntoWordList)  #make a copy for the right stream, and permute them on the next list
     np.random.shuffle(idxsStream2)
     idxsStream2= idxsStream2[:numWordsInStream]  #take the first numWordsInStream of the shuffled list
-    return idxsStream1, idxsStream2, cues
+    return idxsStream1, idxsStream2, cues, preCues
     
 #create click sound for keyboard
 try:
@@ -345,7 +349,7 @@ clickSound, badKeySound = stringResponse.setupSoundsForResponse()
 screenshot= False; screenshotDone = False
 stimList = []
 #SETTING THE CONDITIONS, This implements the full factorial design!
-cueSerialPositions = np.array([0]) #  np.array([10,11,12,13,14])
+cueSerialPositions = np.array([10,11,12,13,14])
 for cueSerialPos in cueSerialPositions:
    for rightResponseFirst in [False,True]:
       for wordEcc in [0.8,6]:
@@ -353,7 +357,7 @@ for cueSerialPos in cueSerialPositions:
                                     'leftStreamFlip':False, 'rightStreamFlip':False,
                                      'wordEccentricity':wordEcc } )
 
-trials = data.TrialHandler(stimList,trialsPerCondition) #constant stimuli method
+trials = data.TrialHandler(stimList,trialsPerCondition) #constant stimuli method. Duplicate the list of conditions trialsPerCondition times to create the full experiment
 trialsForPossibleStaircase = data.TrialHandler(stimList,trialsPerCondition) #independent randomization, just to create random trials for staircase phase
 numRightWrongEachCuepos = np.zeros([ len(cueSerialPositions), 1 ]); #summary results to print out at end
 
@@ -383,15 +387,16 @@ def letterToNumber(letter): #A = 0, Z = 25
     except:
         return (-999)
 
-def wordToIdx(word,wordList):
-    #if it's not in the list of stimuli, return -999
+def wordToIdx(word,wordList, responseMustBeInWordList):
+    #if it's not in the list of stimuli, return None
     try:
         #http://stackoverflow.com/questions/7102050/how-can-i-get-a-python-generator-to-return-none-rather-than-stopiteration
         firstMatchIdx = next((i for i, val in enumerate(wordList) if val.upper()==word), None) #return i (index) unless no matches, in which case return None
         #print('Looked for ',word,' in ',wordList,'\nfirstMatchIdx =',firstMatchIdx)
         return firstMatchIdx
     except:
-        print('Unexpected error in wordToIdx with word=',word)
+        if responseMustBeInWordList:
+            print('Unexpected error in wordToIdx with word=',word)
         return (None)
         
 #print header for data file
@@ -419,7 +424,7 @@ def  oneFrameOfStim( n,cues,cuesSerialPos,seq1,seq2,cueDurFrames,letterDurFrames
   frameOfThisLetter = n % SOAframes #every SOAframes, new letter
   showLetter = frameOfThisLetter < letterDurFrames #if true, it's not time for the blank ISI.  it's still time to draw the letter
   thisStimIdx = seq1[stimN] #which letter, from A to Z (1 to 26), should be shown?
-  print ('stimN=',stimN, 'thisStimIdx=', thisStimIdx, ' SOAframes=',SOAframes, ' letterDurFrames=', letterDurFrames, ' (n % SOAframes) =', (n % SOAframes) ) #DEBUGOFF
+  #print ('stimN=',stimN, 'thisStimIdx=', thisStimIdx, ' SOAframes=',SOAframes, ' letterDurFrames=', letterDurFrames, ' (n % SOAframes) =', (n % SOAframes) ) #DEBUGOFF
   if seq2 is not None:
     thisStim2Idx = seq2[stimN]
   #so that any timing problems occur just as often for every frame, always draw the letter and the cue, but simply draw it in the bgColor when it's not meant to be on
@@ -456,6 +461,7 @@ def  oneFrameOfStim( n,cues,cuesSerialPos,seq1,seq2,cueDurFrames,letterDurFrames
 # #######End of function definition that displays the stimuli!!!! #####################################
 #############################################################################################################################
 cues = list()
+preCues = list()
 for i in xrange(2):
     cue = visual.Circle(myWin, 
                      radius=cueRadius,#Martini used circles with diameter of 12 deg
@@ -470,18 +476,19 @@ for i in xrange(2):
                      autoLog=False)#this stim changes too much for autologging to be useful
     cues.append(cue)
     
-#Precue to potentially inform the participant where the letter streams will appear
-preCue = visual.Circle(myWin,  
-                 radius=2,#Martini used circles with diameter of 12 deg
-                 lineColorSpace = 'rgb',
-                 lineColor=bgColor,
-                 lineWidth=4.0, #in pixels. Was thinner (2 pixels) in letter AB experiments
-                 units = 'deg',
-                 fillColorSpace = 'rgb',
-                 fillColor='white', #beware, with convex shapes fill colors don't work
-                 pos= [0,0], #the anchor (rotation and vertices are position with respect to this)
-                 interpolate=True,
-                 autoLog=False)#this stim changes too much for autologging to be useful
+    #Precue to potentially inform the participant where the letter streams will appear
+    preCue = visual.Circle(myWin,  
+                     radius=2,#Martini used circles with diameter of 12 deg
+                     lineColorSpace = 'rgb',
+                     lineColor=bgColor,
+                     lineWidth=4.0, #in pixels. Was thinner (2 pixels) in letter AB experiments
+                     units = 'deg',
+                     fillColorSpace = 'rgb',
+                     fillColor='white', #beware, with convex shapes fill colors don't work
+                     pos= [0,0], #the anchor (rotation and vertices are position with respect to this)
+                     interpolate=True,
+                     autoLog=False)#this stim changes too much for autologging to be useful
+    preCues.append(preCue)
 
 ltrHeight = 2.5 #Martini letters were 2.5deg high
 #All noise dot coordinates ultimately in pixels, so can specify each dot is one pixel 
@@ -529,7 +536,7 @@ numTrialsApproxCorrect = 0;
 numTrialsEachCorrect= np.zeros( numRespsWanted )
 numTrialsEachApproxCorrect= np.zeros( numRespsWanted )
 
-def do_RSVP_stim(thisTrial, cues, seq1, seq2, proportnNoise,trialN):
+def do_RSVP_stim(thisTrial, cues, preCues, seq1, seq2, proportnNoise,trialN):
     #relies on global variables:
     #   textStimuli, logging, bgColor
     #  thisTrial should have 'cueSerialPos'
@@ -560,6 +567,8 @@ def do_RSVP_stim(thisTrial, cues, seq1, seq2, proportnNoise,trialN):
         #if i%4>=2 or demo or exportImages: #flicker fixation on and off at framerate to see when skip frame
         #      fixation.draw()
         #else: fixationBlank.draw()
+        for preCue in preCues:
+            preCue.draw()
         fixationPoint.draw()
         myWin.flip()  #end fixation interval
     #myWin.setRecordFrameIntervals(True);  #can't get it to stop detecting superlong frames
@@ -608,7 +617,10 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
     if correctAnswer == responseString:
         correct = 1
     #print('correct=',correct)
-    responseWordIdx = wordToIdx(responseString,stimSequence)
+    responseMustBeInWordList = True
+    if len(stimSequence) != len(wordList):
+        responseMustBeInWordList = False
+    responseWordIdx = wordToIdx(responseString,stimSequence, responseMustBeInWordList)
     print('responseWordIdx = ', responseWordIdx, ' stimSequence=', stimSequence)
     if responseWordIdx is None: #response is not in the wordList
         posOfResponse = -999
@@ -710,9 +722,9 @@ if doStaircase:
                 print('stopping because staircase.next() returned a StopIteration, which it does when it is finished')
                 break #break out of the trials loop
         #print('staircaseTrialN=',staircaseTrialN)
-        idxsStream1, idxsStream2, cues = calcAndPredrawStimuli(wordList,cues,staircaseTrials)
+        idxsStream1, idxsStream2, cues, preCues = calcAndPredrawStimuli(wordList,cues,preCues, staircaseTrials)
         cuesSerialPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
-                                        do_RSVP_stim(thisTrial, cues, idxsStream1, idxsStream2, noisePercent/100.,staircaseTrialN)
+                                        do_RSVP_stim(thisTrial, cues, preCues, idxsStream1, idxsStream2, noisePercent/100.,staircaseTrialN)
         numCasesInterframeLong = timingCheckAndLog(ts,staircaseTrialN)
         expStop,passThisTrial,responses,responsesAutopilot = \
                 stringResponse.collectStringResponse(numRespsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,badKeySound,
@@ -782,11 +794,11 @@ else: #not staircase
             msg='Starting main (non-staircase) part of experiment'
             logging.info(msg); print(msg)
         thisTrial = trials.next() #get a proper (non-staircase) trial
-        sequenceStream1, sequenceStream2, cues = calcAndPredrawStimuli(wordList,cues,thisTrial)
+        sequenceStream1, sequenceStream2, cues, preCues = calcAndPredrawStimuli(wordList,cues,preCues, thisTrial)
         print('sequenceStream1=',sequenceStream1)
         print('sequenceStream2=',sequenceStream2)
         cuesSerialPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
-                                                                    do_RSVP_stim(thisTrial, cues, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
+                                                                    do_RSVP_stim(thisTrial, cues, preCues, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)
         #call for each response
         expStop = list(); passThisTrial = list(); responses=list(); responsesAutopilot=list()

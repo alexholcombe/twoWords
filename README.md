@@ -13,6 +13,7 @@ Issues
 
 * Have approximately correct spit out to data file.
 * Add Kim's single-shot code for reading in list of words from a file.
+* After reading in, it's treated as two streams, so need to link them somehow to achieve nonword bigrams. Read in long list of non-word bigrams. On each trial, scramble them and then break into the two individual letters.
 
 * Add pre-cues.
-* Change cue size appropriately. Maybe separate circles in widely-spaced case.
+* Change cue size appropriately? Maybe separate circles in widely-spaced case.
