@@ -46,9 +46,8 @@ prefaceStaircaseNoise = np.array([5,20,20,20, 50,50,50,5,80,80,80,5,95,95,95]) #
 descendingPsycho = True #psychometric function- more noise means worse performance
 threshCriterion = 0.58
 
-numWordsInStream = 24
-wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x" #24 most common words
-lettersUnparsed = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".upper()
+numWordsInStream = 6
+wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x  ,y,z" 
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
     wordList[i] = wordList[i].replace(" ", "") #delete spaces
@@ -293,8 +292,8 @@ def calcAndPredrawStimuli(wordList,cues,thisTrial): #Called before each trial
             eccentricity = 0
         if i==0: cues[i].setPos( [-eccentricity, 0] )
         else:  cues[i].setPos( [eccentricity, 0] )
-    for i in range(0,numWordsInStream): #draw the words that will be used on this trial, the first 26 of the shuffled list
-       word = wordList[ i ]  #     #[ idxsIntoWordList[i] ]
+    for i in range(0,len(wordList)): #draw all the words. Later, the seq will indicate which one to present on each frame. The seq might be shorter than the wordList
+       word = wordList[ i ]
        #flipHoriz, flipVert  textStim http://www.psychopy.org/api/visual/textstim.html
        #Create one bucket of words for the left stream
        textStimulusStream1 = visual.TextStim(myWin,text=word,height=ltrHeight,colorSpace='rgb',color=letterColor,alignHoriz='center',alignVert='center',units='deg',autoLog=autoLogging) 
@@ -306,10 +305,12 @@ def calcAndPredrawStimuli(wordList,cues,thisTrial): #Called before each trial
        textStimuliStream2.append(textStimulusStream2)  #add to list of text stimuli that comprise stream 2
     
     #Use these buckets by pulling out the drawn words in the order you want them. For now, just create the order you want.
-    idxsStream1 = idxsIntoWordList #first RSVP stream
     np.random.shuffle(idxsIntoWordList) #0,1,2,3,4,5,... -> randomly permuted 3,2,5,...
+    idxsStream1 = copy.deepcopy(idxsIntoWordList) #first RSVP stream
+    idxsStream1= idxsStream1[:numWordsInStream] #take the first numWordsInStream of the shuffled list
     idxsStream2 = copy.deepcopy(idxsIntoWordList)  #make a copy for the right stream, and permute them on the next list
     np.random.shuffle(idxsStream2)
+    idxsStream2= idxsStream2[:numWordsInStream]  #take the first numWordsInStream of the shuffled list
     return idxsStream1, idxsStream2, cues
     
 #create click sound for keyboard
@@ -344,7 +345,7 @@ clickSound, badKeySound = stringResponse.setupSoundsForResponse()
 screenshot= False; screenshotDone = False
 stimList = []
 #SETTING THE CONDITIONS, This implements the full factorial design!
-cueSerialPositions =  np.array([10,11,12,13,14])
+cueSerialPositions = np.array([0]) #  np.array([10,11,12,13,14])
 for cueSerialPos in cueSerialPositions:
    for rightResponseFirst in [False,True]:
       for wordEcc in [0.8,6]:
@@ -417,8 +418,8 @@ def  oneFrameOfStim( n,cues,cuesSerialPos,seq1,seq2,cueDurFrames,letterDurFrames
   stimN = int( np.floor(n/SOAframes) )
   frameOfThisLetter = n % SOAframes #every SOAframes, new letter
   showLetter = frameOfThisLetter < letterDurFrames #if true, it's not time for the blank ISI.  it's still time to draw the letter
-  #print 'n=',n,' SOAframes=',SOAframes, ' letterDurFrames=', letterDurFrames, ' (n % SOAframes) =', (n % SOAframes)  #DEBUGOFF
   thisStimIdx = seq1[stimN] #which letter, from A to Z (1 to 26), should be shown?
+  print ('stimN=',stimN, 'thisStimIdx=', thisStimIdx, ' SOAframes=',SOAframes, ' letterDurFrames=', letterDurFrames, ' (n % SOAframes) =', (n % SOAframes) ) #DEBUGOFF
   if seq2 is not None:
     thisStim2Idx = seq2[stimN]
   #so that any timing problems occur just as often for every frame, always draw the letter and the cue, but simply draw it in the bgColor when it's not meant to be on
@@ -607,16 +608,21 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
     if correctAnswer == responseString:
         correct = 1
     #print('correct=',correct)
-    responseWordIdx = wordToIdx(responseString,wordList)
+    responseWordIdx = wordToIdx(responseString,stimSequence)
+    print('responseWordIdx = ', responseWordIdx, ' stimSequence=', stimSequence)
     if responseWordIdx is None: #response is not in the wordList
         posOfResponse = -999
         logging.warn('Response was not present in the stimulus stream')
     else:
-        posOfResponse= np.where( responseWordIdx==stimSequence )
+        posOfResponse= np.where( responseWordIdx==stimSequence ) #Assumes that the response 
         posOfResponse= posOfResponse[0] #list with two entries, want first which will be array of places where the response was found in the sequence
         if len(posOfResponse) > 1:
             logging.error('Expected response to have occurred in only one position in stream')
-        posOfResponse = posOfResponse[0] #first element of list (should be only one element long 
+        elif len(posOfResponse) == 0:
+            logging.error('Expected response to have occurred somewhere in the stream')
+            raise ValueError('Expected response to have occurred somewhere in the stream')
+        else:
+            posOfResponse = posOfResponse[0] #first element of list (should be only one element long 
         responsePosRelative = posOfResponse - cueSerialPos
         approxCorrect = abs(responsePosRelative)<= 3 #Vul efficacy measure of getting it right to within plus/minus
     #print('wordToIdx(',responseString,',',wordList,')=',responseWordIdx,' stimSequence=',stimSequence,'\nposOfResponse = ',posOfResponse) #debugON
@@ -777,6 +783,8 @@ else: #not staircase
             logging.info(msg); print(msg)
         thisTrial = trials.next() #get a proper (non-staircase) trial
         sequenceStream1, sequenceStream2, cues = calcAndPredrawStimuli(wordList,cues,thisTrial)
+        print('sequenceStream1=',sequenceStream1)
+        print('sequenceStream2=',sequenceStream2)
         cuesSerialPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                                                     do_RSVP_stim(thisTrial, cues, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)

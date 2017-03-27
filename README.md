@@ -1,6 +1,8 @@
 # twoWords
 Psychopy experiment involving report of two simultaneously-presented words
 
+Originally created for Word Thrills and Experiment Skills.
+
 Does RSVP, and flashes one really large circle around both streams.
 
 You provide it with a list of words/strings, and it independently samples from them to create the two streams.
