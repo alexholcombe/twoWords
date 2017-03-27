@@ -51,7 +51,7 @@ wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x  ,y,z"
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
     wordList[i] = wordList[i].replace(" ", "") #delete spaces
-#Later on, this list will be randomly permuted for each trial
+#Later on, a list of indices into this list will be randomly permuted for each trial
 
 bgColor = [-.7,-.7,-.7] # [-1,-1,-1]
 cueColor = [1.,1.,1.]
@@ -276,13 +276,52 @@ if fullscr and not demo and not exportImages:
     logging.info(runInfo)
 logging.flush()
 
+def calcSequenceForThisTrial():
+    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
+    readFromFile = True
+    if readFromFile:
+        #read in the file of list of bigrams
+        stimFile = 'wordStimuliGeneration/twoLetters-Cheryl.txt'
+        stimListFile= open(stimFile)
+        bigramList = [x.rstrip() for x in stimListFile.readlines()]
+        print('Read in', len(bigramList), 'strings')
+        print('bigramList = ',bigramList)
+        stimListFile.close()
+        #Scramble 
+        shuffled = deepcopy(bigramList)
+        random.shuffle(shuffled)
+        print('first 10 unshuffled=',bigramList[:10])
+        print('first 10 shuffled=',shuffled[:10])
+        
+        #Break into two
+        firstLetters = list()
+        secondLetters = list()
+        for bigram in shuffled:
+            firstLetter = bigram[0]
+            secondLetter = bigram[1]
+            firstLetters.append( firstLetter )
+            secondLetters.append ( secondLetter ) 
+            
+        print('first 10 firstLetters=',firstLetters[:10])
+        print('first 10 secondLetters=',secondLetters[:10])
+        #Now must determine what indexes into the wordList (list of letters pre-drawn) correspond to these
+        
+        
+    else: #if not readFromFile: #just create a shuffled index of all the possibilities
+        np.random.shuffle(idxsIntoWordList) #0,1,2,3,4,5,... -> randomly permuted 3,2,5,...
+        idxsStream1 = copy.deepcopy(idxsIntoWordList) #first RSVP stream
+        idxsStream1= idxsStream1[:numWordsInStream] #take the first numWordsInStream of the shuffled list
+        idxsStream2 = copy.deepcopy(idxsIntoWordList)  #make a copy for the right stream, and permute them on the next list
+        np.random.shuffle(idxsStream2)
+        idxsStream2= idxsStream2[:numWordsInStream]  #take the first numWordsInStream of the shuffled list
+    return idxsStream1, idxsStream2
+    
 textStimuliStream1 = list()
 textStimuliStream2 = list() #used for second, simultaneous RSVP stream
 def calcAndPredrawStimuli(wordList,cues, preCues,thisTrial): #Called before each trial 
     #textStimuliStream1 and 2 assumed to be global variables
     if len(wordList) < numWordsInStream:
         print('Error! Your word list must have at least ',numWordsInStream,'strings')
-    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
     print('wordList=',wordList)
     textStimuliStream1[:] = [] #Delete all items in the list
     textStimuliStream2[:] = [] #Delete all items in the list
@@ -309,12 +348,8 @@ def calcAndPredrawStimuli(wordList,cues, preCues,thisTrial): #Called before each
        textStimuliStream2.append(textStimulusStream2)  #add to list of text stimuli that comprise stream 2
     
     #Use these buckets by pulling out the drawn words in the order you want them. For now, just create the order you want.
-    np.random.shuffle(idxsIntoWordList) #0,1,2,3,4,5,... -> randomly permuted 3,2,5,...
-    idxsStream1 = copy.deepcopy(idxsIntoWordList) #first RSVP stream
-    idxsStream1= idxsStream1[:numWordsInStream] #take the first numWordsInStream of the shuffled list
-    idxsStream2 = copy.deepcopy(idxsIntoWordList)  #make a copy for the right stream, and permute them on the next list
-    np.random.shuffle(idxsStream2)
-    idxsStream2= idxsStream2[:numWordsInStream]  #take the first numWordsInStream of the shuffled list
+    idxsStream1, idxsStream2 = calcSequenceForThisTrial()
+
     return idxsStream1, idxsStream2, cues, preCues
     
 #create click sound for keyboard
@@ -467,7 +502,7 @@ for i in xrange(2):
                      radius=cueRadius,#Martini used circles with diameter of 12 deg
                      lineColorSpace = 'rgb',
                      lineColor=bgColor,
-                     lineWidth=4.0, #in pixels. Was thinner (2 pixels) in letter AB experiments
+                     lineWidth=6.0, #in pixels. Was thinner (2 pixels) in letter AB experiments
                      units = 'deg',
                      fillColorSpace = 'rgb',
                      fillColor=None, #beware, with convex shapes fill colors don't work
