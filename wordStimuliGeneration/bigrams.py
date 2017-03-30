@@ -5,6 +5,7 @@
 
 from __future__ import print_function #use python3 style print
 
+#READ IN THE DESIRED STIMULI
 #read in the file of list of bigrams
 stimFile = 'twoLetters-Cheryl.txt'
 stimListFile= open(stimFile)
@@ -34,6 +35,7 @@ for bigram in shuffled:
    
 print('first 10 firstLetters=',firstLetters[:10])
 print('first 10 secondLetters=',secondLetters[:10])
+#FINISHED READING IN THE STIMULI
 
 #MAP ONTO THE EXISTING LIST OF LETTERS DRAWNL
 #Create the existing list of letters drawn, as usually done in our twoWords program
@@ -44,4 +46,15 @@ for i in range(len(wordList)):
     wordList[i] = wordList[i].replace(" ", "") #delete spaces
  
  #Find the index of each desired letter into the list of letters already drawn
- 
+idxsStream1 = list()
+idxsStream2 = list()
+for letter in firstLetters: #Find where in the "wordList" each letter is
+    try:
+        idx = wordList.index(letter)
+    except ValueError:
+        print("Error! ", letter," not found in wordList")
+    except Exception as e:
+        print('Unexpected error',e)
+    print("Searched for ",letter," in the wordList and index returned was ",idx)
+    idxsStream1.append(idx)
+print("final idxsStream1=",idxsStream1)

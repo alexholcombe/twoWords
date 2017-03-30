@@ -276,11 +276,7 @@ if fullscr and not demo and not exportImages:
     logging.info(runInfo)
 logging.flush()
 
-def calcSequenceForThisTrial():
-    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
-    readFromFile = True
-    if readFromFile:
-        #read in the file of list of bigrams
+def readFileAndScramble():
         stimFile = 'wordStimuliGeneration/twoLetters-Cheryl.txt'
         stimListFile= open(stimFile)
         bigramList = [x.rstrip() for x in stimListFile.readlines()]
@@ -304,9 +300,36 @@ def calcSequenceForThisTrial():
             
         print('first 10 firstLetters=',firstLetters[:10])
         print('first 10 secondLetters=',secondLetters[:10])
+        return firstLetters, secondLetters
+
+def findLtrInList(letter,wordList):
+    try:
+        idx = wordList.index(letter)
+    except ValueError:
+        print("Error! ", letter," not found in wordList")
+    except Exception as e:
+        print('Unexpected error',e)
+    print("Searched for ",letter," in the wordList and index returned was ",idx)
+    return idx
+    
+def calcSequenceForThisTrial():
+    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
+    readFromFile = True
+    if readFromFile:
+        #read in the file of list of bigrams
+        firstLetters, secondLetters = readFileAndScramble()
         #Now must determine what indexes into the wordList (list of letters pre-drawn) correspond to these
-        
-        
+        idxsStream1 = list()
+        idxsStream2 = list()
+        for ltri in range(numWordsInStream): #Find where in the "wordList" each letter is, add it to idxsStream1
+            letter = firstLetters[ltri]
+            idx = findLtrInList(letter, wordList)
+            idxsStream1.append(idx)
+        print("final idxsStream1=",idxsStream1)
+        for ltri in range(numWordsInStream): #Find where in the "wordList" each letter is, add it to idxsStream1
+            letter = secondLetters[ltri]
+            idx = findLtrInList(letter, wordList)
+            idxsStream2.append(idx)
     else: #if not readFromFile: #just create a shuffled index of all the possibilities
         np.random.shuffle(idxsIntoWordList) #0,1,2,3,4,5,... -> randomly permuted 3,2,5,...
         idxsStream1 = copy.deepcopy(idxsIntoWordList) #first RSVP stream
