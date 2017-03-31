@@ -689,7 +689,8 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
         posOfResponse = -999
         logging.warn('Response was not present in the stimulus stream')
     else:
-        posOfResponse= np.where( responseWordIdx==stimSequence ) #Assumes that the response 
+        posOfResponse= np.where( responseWordIdx==stimSequence ) #Assumes that the response
+        print("posOfResponse=",posOfResponse, "responseWordIdx=",responseWordIdx,"stimSequence=",stimSequence)
         posOfResponse= posOfResponse[0] #list with two entries, want first which will be array of places where the response was found in the sequence
         if len(posOfResponse) > 1:
             logging.error('Expected response to have occurred in only one position in stream')
