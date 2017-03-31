@@ -5,8 +5,9 @@ from psychopy import monitors, visual, event, data, logging, core, sound, gui
 import psychopy.info
 import numpy as np
 from math import atan, log, ceil
+from copy import deepcopy
 import copy
-import time, sys, os, pylab
+import time, sys, os, pylab, random
 try:
     from noiseStaircaseHelpers import printStaircase, toStaircase, outOfStaircase, createNoise, plotDataAndPsychometricCurve
 except ImportError:
@@ -101,7 +102,7 @@ if quitFinder:
     os.system(shellCmd)
 
 #letter size 2.5 deg
-SOAms = 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
+SOAms = 300 # 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
 #Minimum SOAms should be 84  because any shorter, I can't always notice the second ring when lag1.   71 in Martini E2 and E1b (actually he used 66.6 but that's because he had a crazy refresh rate of 90 Hz)
 letterDurMs = 80 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
 
@@ -281,13 +282,13 @@ def readFileAndScramble():
         stimListFile= open(stimFile)
         bigramList = [x.rstrip() for x in stimListFile.readlines()]
         print('Read in', len(bigramList), 'strings')
-        print('bigramList = ',bigramList)
+        #print('bigramList = ',bigramList)
         stimListFile.close()
         #Scramble 
         shuffled = deepcopy(bigramList)
         random.shuffle(shuffled)
-        print('first 10 unshuffled=',bigramList[:10])
-        print('first 10 shuffled=',shuffled[:10])
+        #print('first 10 unshuffled=',bigramList[:10])
+        #print('first 10 shuffled=',shuffled[:10])
         
         #Break into two
         firstLetters = list()
@@ -298,8 +299,8 @@ def readFileAndScramble():
             firstLetters.append( firstLetter )
             secondLetters.append ( secondLetter ) 
             
-        print('first 10 firstLetters=',firstLetters[:10])
-        print('first 10 secondLetters=',secondLetters[:10])
+        #print('first 10 firstLetters=',firstLetters[:10])
+        #print('first 10 secondLetters=',secondLetters[:10])
         return firstLetters, secondLetters
 
 def findLtrInList(letter,wordList):
@@ -309,7 +310,7 @@ def findLtrInList(letter,wordList):
         print("Error! ", letter," not found in wordList")
     except Exception as e:
         print('Unexpected error',e)
-    print("Searched for ",letter," in the wordList and index returned was ",idx)
+    #print("Searched for ",letter," in the wordList and index returned was ",idx)
     return idx
     
 def calcSequenceForThisTrial():
@@ -325,7 +326,7 @@ def calcSequenceForThisTrial():
             letter = firstLetters[ltri]
             idx = findLtrInList(letter, wordList)
             idxsStream1.append(idx)
-        print("final idxsStream1=",idxsStream1)
+        #print("final idxsStream1=",idxsStream1)
         for ltri in range(numWordsInStream): #Find where in the "wordList" each letter is, add it to idxsStream1
             letter = secondLetters[ltri]
             idx = findLtrInList(letter, wordList)
@@ -345,7 +346,7 @@ def calcAndPredrawStimuli(wordList,cues, preCues,thisTrial): #Called before each
     #textStimuliStream1 and 2 assumed to be global variables
     if len(wordList) < numWordsInStream:
         print('Error! Your word list must have at least ',numWordsInStream,'strings')
-    print('wordList=',wordList)
+    #print('wordList=',wordList)
     textStimuliStream1[:] = [] #Delete all items in the list
     textStimuliStream2[:] = [] #Delete all items in the list
     for i in xrange( len(cues) ):
@@ -649,9 +650,13 @@ def do_RSVP_stim(thisTrial, cues, preCues, seq1, seq2, proportnNoise,trialN):
         respPromptStim.setText('What was circled?',log=False)   
     else: respPromptStim.setText('Error: unexpected task',log=False)
     postCueNumBlobsAway=-999 #doesn't apply to non-tracking and click tracking task
-    correctAnswerIdxsStream1 = np.array( seq1[cuesSerialPos] )
-    correctAnswerIdxsStream2 = np.array( seq2[cuesSerialPos] )
-    #print('correctAnswerIdxsStream1=',correctAnswerIdxsStream1, 'wordList[correctAnswerIdxsStream1[0]]=',wordList[correctAnswerIdxsStream1[0]])
+    #print('cuesSerialPos=',cuesSerialPos, 'cuesSerialPos.dtype =',cuesSerialPos.dtype, 'type(seq1)=',type(seq1))
+    seq1 = np.array(seq1) #convert seq1 list to array so that can index it with multiple indices (cuesSerialPos)
+    #print('seq1[cuesSerialPos]=', seq1[cuesSerialPos])
+    seq2= np.array(seq2) #convert seq2 list to array so that can index it with multiple indices (cuesSerialPos)
+    correctAnswerIdxsStream1 = np.array(    seq1[cuesSerialPos]    )
+    correctAnswerIdxsStream2 = np.array(    seq2[cuesSerialPos]    )
+    #print('correctAnswerIdxsStream1=',correctAnswerIdxsStream1)#, 'wordList[correctAnswerIdxsStream1[0]]=',wordList[correctAnswerIdxsStream1[0]])
     return cuesSerialPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2,ts
     
 def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSequence,cueSerialPos,correctAnswerIdx):
@@ -697,6 +702,7 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
         approxCorrect = abs(responsePosRelative)<= 3 #Vul efficacy measure of getting it right to within plus/minus
     #print('wordToIdx(',responseString,',',wordList,')=',responseWordIdx,' stimSequence=',stimSequence,'\nposOfResponse = ',posOfResponse) #debugON
     #print response stuff to dataFile
+    print('correctAnswer=',correctAnswer,' correct=',correct, 'responsePosRelative=',responsePosRelative)
     #header was answerPos0, answer0, response0, correct0, responsePosRelative0
     print(cueSerialPos,'\t', end='', file=dataFile)
     print(correctAnswer, '\t', end='', file=dataFile) #answer0
@@ -857,6 +863,7 @@ else: #not staircase
         print('sequenceStream2=',sequenceStream2)
         cuesSerialPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                                                     do_RSVP_stim(thisTrial, cues, preCues, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
+        print('correctAnswerIdxsStream1=',correctAnswerIdxsStream1,'correctAnswerIdxsStream2=',correctAnswerIdxsStream2)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)
         #call for each response
         expStop = list(); passThisTrial = list(); responses=list(); responsesAutopilot=list()
@@ -885,6 +892,7 @@ else: #not staircase
                 if i==0:
                     sequenceStream = sequenceStream1; correctAnswerIdxs = correctAnswerIdxsStream1; 
                 else: sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
+
                 correct,approxCorrect,responsePosRelative = (
                         handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot[i],task,sequenceStream,thisTrial['cueSerialPos'],correctAnswerIdxs[i] ) )
                 eachCorrect[i] = correct
