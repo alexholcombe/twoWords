@@ -286,6 +286,7 @@ def detectDuplicates(myList):
     else: return False
     
 def readFileAndScramble(numWordsInStream):
+        #Abandoning use of this for Cheryl's experiment because too hard to find enough non-word bigrams for which letters not repeated in either stream
         stimFile = 'wordStimuliGeneration/twoLetters-Cheryl.txt'
         stimListFile= open(stimFile)
         bigramList = [x.rstrip() for x in stimListFile.readlines()]
@@ -330,9 +331,9 @@ def findLtrInList(letter,wordList):
     
 def calcSequenceForThisTrial():
     idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
-    readFromFile = True
+    readFromFile = False
     if readFromFile:
-        #read in the file of list of bigrams
+        #read in the file of list of bigrams. Doesn't work because  too hard to find enough non-word bigrams for which letters not repeated in either stream
         firstLetters, secondLetters = readFileAndScramble(numWordsInStream)
         #Now must determine what indexes into the wordList (list of letters pre-drawn) correspond to these
         idxsStream1 = list()
@@ -711,7 +712,6 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
     else:
         posOfResponse= np.where( np.array(stimSequence)==responseWordIdx ) #Assumes that the response was in the stimulus sequence
         print("posOfResponse=",posOfResponse, "responseWordIdx=",responseWordIdx,"stimSequence=",stimSequence, "type(stimSequence)=",type(stimSequence))
-        QUIT
         posOfResponse= posOfResponse[0] #list with two entries, want first which will be array of places where the response was found in the sequence
         if len(posOfResponse) > 1:
             logging.error('Expected response to have occurred in only one position in stream')
@@ -749,6 +749,7 @@ def play_high_tone_correct_low_incorrect(correct, passThisTrial=False):
     else: #incorrect
         low.play()
 
+changeToUpper = False #Chery's experimnet
 expStop=False
 nDoneMain = -1 #change to zero once start main part of experiment
 if doStaircase:
@@ -814,7 +815,7 @@ if doStaircase:
         numCasesInterframeLong = timingCheckAndLog(ts,staircaseTrialN)
         expStop,passThisTrial,responses,responsesAutopilot = \
                 stringResponse.collectStringResponse(numRespsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,badKeySound,
-                                                                               requireAcceptance,autopilot,responseDebug=True)
+                                                                               requireAcceptance,autopilot,changeToUpper,responseDebug=True)
 
         if not expStop:
             if mainStaircaseGoing:
@@ -899,7 +900,7 @@ else: #not staircase
             x = 1.5* thisTrial['wordEccentricity']*(i*2-1) #put it 3 times farther out than stimulus, so participant is sure which is left and which right
             expStop[i],passThisTrial[i],responses[i],responsesAutopilot[i] = stringResponse.collectStringResponse(
                                       numCharsInResponse,x,respPromptStim,respStim,acceptTextStim,fixationPoint,myWin,clickSound,badKeySound,
-                                                                                   requireAcceptance,autopilot,responseDebug=True)                                                                               
+                                                                                   requireAcceptance,autopilot,changeToUpper,responseDebug=True)                                                                               
         expStop = np.array(expStop).any(); passThisTrial = np.array(passThisTrial).any()
         if not expStop:
             print('main\t', end='', file=dataFile) #first thing printed on each line of dataFile to indicate main part of experiment, not staircase

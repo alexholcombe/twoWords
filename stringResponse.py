@@ -4,12 +4,14 @@ import string
 from copy import deepcopy
 import time
 
-def drawResponses(responses,respStim,numCharsWanted,drawBlanks):
+def drawResponses(responses,respStim,numCharsWanted,changeToUpperCase,drawBlanks):
     '''Draw the letters the user has entered
     drawBlanks is whether to show empty spaces with _, that's why numCharsWanted would be needed
     '''
     respStr = ''.join(responses) #converts list of characters (responses) into string
     #print 'responses=',responses,' respStr = ', respStr #debugOFF
+    if changeToUpperCase:
+        respStr = respStr.upper()
     if drawBlanks:
         blanksNeeded = numCharsWanted - len(respStr)
         respStr = respStr + '_'*blanksNeeded
@@ -17,7 +19,7 @@ def drawResponses(responses,respStim,numCharsWanted,drawBlanks):
     respStim.draw(); 
         
 def collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextStim,fixation,myWin,
-                                               clickSound,badKeySound,requireAcceptance,autopilot,responseDebug=False): 
+                                               clickSound,badKeySound,requireAcceptance,autopilot,changeToUpperCase,responseDebug=False): 
     '''respPromptStim should be a stimulus with a draw() method
     '''
     event.clearEvents() #clear the keyboard buffer
@@ -37,13 +39,16 @@ def collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextSti
            if fixation is not None:
                 fixation.draw()
            respPromptStim.draw()
-           drawResponses(responses,respStim,numCharsWanted,drawBlanks)
+           drawResponses(responses,respStim,numCharsWanted,changeToUpperCase,drawBlanks)
            myWin.flip()
            click =  False
            if autopilot: #need to wait otherwise dont have chance to press a key 
                 for f in range(20): time.sleep(.01) #core.wait(1.0/60) #myWin.flip()
            keysPressed = event.getKeys()
-           keysPressed = [key.upper() for key in keysPressed] #transform to uppercase
+           if changeToUpperCase:
+                keysPressed = [key.upper() for key in keysPressed] #transform to uppercase
+           else:
+                keysPressed = [key for key in keysPressed] 
            if autopilot:
                noResponseYet = False
                numResponses = numCharsWanted
@@ -52,20 +57,19 @@ def collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextSti
            elif len(keysPressed) > 0:
                 key = keysPressed[-1] #process only the last key, it being the most recent. In theory person could type more than one key between window flips, 
                 #but that might be hard to handle.
-                key = key.upper()
                 thisResponse = key
-                if key in ['ESCAPE']:
+                if key.upper() in ['ESCAPE']:
                      expStop = True
                      noResponseYet = False
 #                  if key in ['SPACE']: #observer opting out because think they moved their eyes
 #                      passThisTrial = True
 #                      noResponseYet = False
-                elif key in string.ascii_letters:
+                elif key.upper() in string.ascii_letters:
                     noResponseYet = False
                     responses.append(thisResponse)
                     numResponses += 1 #not just using len(responses) because want to work even when autopilot, where thisResponse is null
                     click = True
-                elif key in ['BACKSPACE','DELETE']:
+                elif key.upper() in ['BACKSPACE','DELETE']:
                     if len(responses) >0:
                         responses.pop()
                         numResponses -= 1
@@ -74,7 +78,7 @@ def collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextSti
 
         if click and (click is not None):
             clickSound.play()
-        drawResponses(responses,respStim,numCharsWanted,drawBlanks)
+        drawResponses(responses,respStim,numCharsWanted,changeToUpperCase,drawBlanks)
         myWin.flip() #draw again, otherwise won't draw the last key
         
         if (numResponses == numCharsWanted) and requireAcceptance:  #ask participant to HIT ENTER TO ACCEPT
@@ -85,23 +89,23 @@ def collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextSti
                 acceptTextStim.draw()
                 respStim.draw()
                 for key in event.getKeys():
-                    key = key.upper()
-                    if key in ['ESCAPE']:
+                    if key.upper() in ['ESCAPE']:
                         expStop = True
                         #noResponseYet = False
-                    elif key in ['ENTER','RETURN']:
+                    elif key.upper() in ['ENTER','RETURN']:
                         waitingForAccept = False
                         accepted = True
-                    elif key in ['BACKSPACE','DELETE']:
+                    elif key.upper() in ['BACKSPACE','DELETE']:
                         waitingForAccept = False
                         numResponses -= 1
                         responses.pop()
-                        drawResponses(responses,respStim,numCharsWanted,drawBlanks)
+                        drawResponses(responses,respStim,numCharsWanted,changeToUpperCase,drawBlanks)
                         myWin.flip() #draw again, otherwise won't draw the last key
                 myWin.flip() #end of waitingForAccept loop
           #end of waiting until response is finished, all keys and acceptance if required
           
     responsesAutopilot = np.array(   numCharsWanted*list([('A')])   )
+    responses = [response.upper() for response in responses] 
     responses=np.array( responses )
     #print 'responses=', responses,' responsesAutopilot=', responsesAutopilot #debugOFF
     return expStop,passThisTrial,responses,responsesAutopilot
@@ -147,8 +151,10 @@ if __name__=='__main__':  #Running this file directly, must want to test functio
     respPromptStim.setText('Enter your ' + str(numCharsWanted) + '-character response')
     requireAcceptance = True
     x=-.2 #x offset relative to centre of screen
+    changeToUpper = True
     expStop,passThisTrial,responses,responsesAutopilot = \
-                collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextStim,None,window,clickSound,badKeySound,requireAcceptance,autopilot,responseDebug=True)
+                collectStringResponse(numCharsWanted,x,respPromptStim,respStim,acceptTextStim,None,window,clickSound,badKeySound,requireAcceptance,autopilot,
+                                                        changeToUpper, responseDebug=True)
     print('responses=',responses)
     print('expStop=',expStop,' passThisTrial=',passThisTrial,' responses=',responses, ' responsesAutopilot =', responsesAutopilot)
     print('Finished') 
