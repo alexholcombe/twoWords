@@ -52,6 +52,8 @@ wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x  ,y,z"
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
     wordList[i] = wordList[i].replace(" ", "") #delete spaces
+if len(wordList) > numWordsInStream:
+    print("WARNING: you have asked for streams that have more stimuli than are in the wordList, so some will be duplicated")
 #Later on, a list of indices into this list will be randomly permuted for each trial
 
 bgColor = [-.7,-.7,-.7] # [-1,-1,-1]
@@ -277,7 +279,13 @@ if fullscr and not demo and not exportImages:
     logging.info(runInfo)
 logging.flush()
 
-def readFileAndScramble():
+def detectDuplicates(myList):
+    uniqueVals = set(myList)
+    if len( list(uniqueVals) ) < len(myList):
+        return True
+    else: return False
+    
+def readFileAndScramble(numWordsInStream):
         stimFile = 'wordStimuliGeneration/twoLetters-Cheryl.txt'
         stimListFile= open(stimFile)
         bigramList = [x.rstrip() for x in stimListFile.readlines()]
@@ -286,21 +294,28 @@ def readFileAndScramble():
         stimListFile.close()
         #Scramble 
         shuffled = deepcopy(bigramList)
-        random.shuffle(shuffled)
-        #print('first 10 unshuffled=',bigramList[:10])
-        #print('first 10 shuffled=',shuffled[:10])
         
-        #Break into two
-        firstLetters = list()
-        secondLetters = list()
-        for bigram in shuffled:
-            firstLetter = bigram[0]
-            secondLetter = bigram[1]
-            firstLetters.append( firstLetter )
-            secondLetters.append ( secondLetter ) 
-            
-        #print('first 10 firstLetters=',firstLetters[:10])
-        #print('first 10 secondLetters=',secondLetters[:10])
+        shuffleUntilNoDuplicatesOfFirstOrSecondLetter = True
+        duplicates = True #intiialise this as true so the loop will run at least once
+        while shuffleUntilNoDuplicatesOfFirstOrSecondLetter and duplicates:
+            random.shuffle(shuffled)
+            #print('first 10 unshuffled=',bigramList[:10])
+            #print('first 10 shuffled=',shuffled[:10])
+            #Break into two
+            firstLetters = list()
+            secondLetters = list()
+            for bigram in shuffled[:numWordsInStream]:
+                firstLetter = bigram[0]
+                secondLetter = bigram[1]
+                firstLetters.append( firstLetter )
+                secondLetters.append ( secondLetter ) 
+            print("shuffled firstLetters=",firstLetters," secondLetters=",secondLetters)
+            duplicates = detectDuplicates(firstLetters)
+            if not duplicates:
+                duplicates = detectDuplicates(secondLetters)
+                
+        print('first 20 shuffled firstLetters=',firstLetters[:20])
+        print('first 20  shuffled secondLetters=',secondLetters[:20])
         return firstLetters, secondLetters
 
 def findLtrInList(letter,wordList):
@@ -318,7 +333,7 @@ def calcSequenceForThisTrial():
     readFromFile = True
     if readFromFile:
         #read in the file of list of bigrams
-        firstLetters, secondLetters = readFileAndScramble()
+        firstLetters, secondLetters = readFileAndScramble(numWordsInStream)
         #Now must determine what indexes into the wordList (list of letters pre-drawn) correspond to these
         idxsStream1 = list()
         idxsStream2 = list()
@@ -683,14 +698,20 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
     responseMustBeInWordList = True
     if len(stimSequence) != len(wordList):
         responseMustBeInWordList = False
-    responseWordIdx = wordToIdx(responseString,stimSequence, responseMustBeInWordList)
+    #stimSeqAsLetters = list()
+    #for letter in stimSequence:
+    #    stimSeqAsLetters.append(  chr( ord('A') + letter ) )
+    #letterIdxOfAlphabet = ord(  responseString.upper() ) - ord( 'A')  
+    #print("Sending to responseWordIdx stimSequence=",stimSequence," responseString=",responseString, "stimSeqAsLetters=",stimSeqAsLetters, "responseMustBeInWordList=",responseMustBeInWordList)
+    responseWordIdx = wordToIdx(responseString.upper(),wordList, responseMustBeInWordList)
     print('responseWordIdx = ', responseWordIdx, ' stimSequence=', stimSequence)
     if responseWordIdx is None: #response is not in the wordList
         posOfResponse = -999
         logging.warn('Response was not present in the stimulus stream')
     else:
-        posOfResponse= np.where( responseWordIdx==stimSequence ) #Assumes that the response
-        print("posOfResponse=",posOfResponse, "responseWordIdx=",responseWordIdx,"stimSequence=",stimSequence)
+        posOfResponse= np.where( np.array(stimSequence)==responseWordIdx ) #Assumes that the response was in the stimulus sequence
+        print("posOfResponse=",posOfResponse, "responseWordIdx=",responseWordIdx,"stimSequence=",stimSequence, "type(stimSequence)=",type(stimSequence))
+        QUIT
         posOfResponse= posOfResponse[0] #list with two entries, want first which will be array of places where the response was found in the sequence
         if len(posOfResponse) > 1:
             logging.error('Expected response to have occurred in only one position in stream')
