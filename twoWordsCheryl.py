@@ -486,6 +486,7 @@ for i in range(numRespsWanted):
    dataFile.write('response'+str(i)+'\t')
    dataFile.write('correct'+str(i)+'\t')
    dataFile.write('responsePosRelative'+str(i)+'\t')
+print('seq1\tseq2\t',end='', file=dataFile) #assuming 2 streams
 print('timingBlips',file=dataFile)
 #end of header
 
@@ -827,7 +828,8 @@ if doStaircase:
             print(subject,'\t',task,'\t', round(noisePercent,2),'\t', end='', file=dataFile)
             correct,approxCorrect,responsePosRelative= handleAndScoreResponse(
                                                 passThisTrial,responses,responseAutopilot,task,sequenceLeft,cuesSerialPos[0],correctAnswerIdx )
-
+            #header then had seq1, seq2
+            print(idxsStream1,'\t',idxsStream2,'\t', end='', file=dataFile) #print the indexes into the wordList
             print(numCasesInterframeLong, file=dataFile) #timingBlips, last thing recorded on each line of dataFile
             core.wait(.06)
             if feedback: 
@@ -920,6 +922,8 @@ else: #not staircase
                         handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot[i],task,sequenceStream,thisTrial['cueSerialPos'],correctAnswerIdxs[i] ) )
                 eachCorrect[i] = correct
                 eachApproxCorrect[i] = approxCorrect
+            #header then had seq1, seq2. Save them.
+            print(sequenceStream1,'\t',sequenceStream2,'\t', end='', file=dataFile) #print the indexes into the wordList
             print(numCasesInterframeLong, file=dataFile) #timingBlips, last thing recorded on each line of dataFile
             print('correct=',correct,' approxCorrect=',approxCorrect,' eachCorrect=',eachCorrect, ' responsePosRelative=', responsePosRelative)
             numTrialsCorrect += eachCorrect.all() #so count -1 as 0
