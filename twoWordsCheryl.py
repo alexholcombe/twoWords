@@ -52,7 +52,7 @@ prefaceStaircaseNoise = np.array([5,20,20,20, 50,50,50,5,80,80,80,5,95,95,95]) #
 descendingPsycho = True #psychometric function- more noise means worse performance
 threshCriterion = 0.58
 
-numWordsInStream = 26
+numWordsInStream = 26 #Experiment will only work if all 26 letters are presented, otherwise error when you pick a letter that was not presented
 wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z" 
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
@@ -440,7 +440,7 @@ NextRemindCountText = visual.TextStim(myWin,pos=(0,.2),colorSpace='rgb',color= (
 screenshot= False; screenshotDone = False
 stimList = []
 #SETTING THE CONDITIONS, This implements the full factorial design!
-cueSerialPositions = np.array([10,11,12,13,14])
+cueSerialPositions = np.array([7,9,11,13,15])
 for cueSerialPos in cueSerialPositions:
    for rightResponseFirst in [False,True]:
       for wordEcc in [0.8,6]:
@@ -915,15 +915,12 @@ else: #not staircase
         expStop = copy.deepcopy(dL); responses = copy.deepcopy(dL); responsesAutopilot = copy.deepcopy(dL); passThisTrial=copy.deepcopy(dL)
         responseOrder = range(numRespsWanted)
         showBothSides=True
-        sideFirstLeftRightCentral = 0
-        if thisTrial['rightResponseFirst']: #change order of indices depending on rightResponseFirst. response0, answer0 etc refer to which one had to be reported first
-                responseOrder.reverse()
+        sideFirstLeftRightCentral = thisTrial['rightResponseFirst']
+        #if thisTrial['rightResponseFirst']: #change order of indices depending on rightResponseFirst. response0, answer0 etc refer to which one had to be reported first
+        #        responseOrder.reverse()  #this is necessary if using text input rather than lineup response
                 
-        
         expStop,passThisTrial,responses,buttons,responsesAutopilot = \
               letterLineupResponse.doLineup(myWin,bgColor,myMouse,clickSound,badKeySound,possibleResps,showBothSides,sideFirstLeftRightCentral,autopilot) #CAN'T YET HANDLE MORE THAN 2 LINEUPS
-        print('Now')
-        print(responses)
         expStop = np.array(expStop).any(); passThisTrial = np.array(passThisTrial).any()
         if not expStop:
             print('main\t', end='', file=dataFile) #first thing printed on each line of dataFile to indicate main part of experiment, not staircase
