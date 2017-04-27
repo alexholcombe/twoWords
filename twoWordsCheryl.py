@@ -7,7 +7,7 @@ import numpy as np
 from math import atan, log, ceil
 from copy import deepcopy
 import copy
-import time, sys, os, pylab, random
+import time, sys, os, pylab, random, string
 try:
     from noiseStaircaseHelpers import printStaircase, toStaircase, outOfStaircase, createNoise, plotDataAndPsychometricCurve
 except ImportError:
@@ -16,6 +16,11 @@ try:
     import stringResponse
 except ImportError:
     print('Could not import stringResponse.py (you need that file to be in the same directory)')
+    
+try:
+    import letterLineupResponse
+except ImportError:
+    print('Could not import letterLineupResponse.py (you need that file to be in the same directory)')
 
 tasks=['T1']; task = tasks[0]
 #THINGS THAT COULD PREVENT SUCCESS ON A NEW MACHINE
@@ -47,8 +52,8 @@ prefaceStaircaseNoise = np.array([5,20,20,20, 50,50,50,5,80,80,80,5,95,95,95]) #
 descendingPsycho = True #psychometric function- more noise means worse performance
 threshCriterion = 0.58
 
-numWordsInStream = 20
-wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x  ,y,z" 
+numWordsInStream = 26
+wordsUnparsed="a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z" 
 wordList = wordsUnparsed.split(",") #split into list
 for i in range(len(wordList)):
     wordList[i] = wordList[i].replace(" ", "") #delete spaces
@@ -81,6 +86,17 @@ viewdist = 57. #cm
 pixelperdegree = widthPix/ (atan(monitorwidth/viewdist) /np.pi*180)
 print('pixelperdegree=',pixelperdegree)
     
+    
+    
+try:
+    click=sound.Sound('406__tictacshutup__click-1-d.wav')
+except: #in case file missing, create inferiro click manually
+    logging.warn('Could not load the desired click sound file, instead using manually created inferior click')
+    click=sound.Sound('D',octave=4, sampleRate=22050, secs=0.015, bits=8)
+
+
+clickSound, badKeySound = stringResponse.setupSoundsForResponse()
+
 # create a dialog from dictionary 
 infoFirst = { 'Do staircase (only)': False, 'Check refresh etc':True, 'Fullscreen (timing errors if not)': False, 'Screen refresh rate':refreshRate }
 OK = gui.DlgFromDict(dictionary=infoFirst, 
@@ -104,9 +120,9 @@ if quitFinder:
     os.system(shellCmd)
 
 #letter size 2.5 deg
-SOAms = 300 # 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
+SOAms = 600 # 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
 #Minimum SOAms should be 84  because any shorter, I can't always notice the second ring when lag1.   71 in Martini E2 and E1b (actually he used 66.6 but that's because he had a crazy refresh rate of 90 Hz)
-letterDurMs = 80 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
+letterDurMs = 300 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
 
 ISIms = SOAms - letterDurMs
 letterDurFrames = int( np.floor(letterDurMs / (1000./refreshRate)) )
@@ -419,7 +435,7 @@ requireAcceptance = True
 nextText = visual.TextStim(myWin,pos=(0, .1),colorSpace='rgb',color = (1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
 NextRemindCountText = visual.TextStim(myWin,pos=(0,.2),colorSpace='rgb',color= (1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging)
 
-clickSound, badKeySound = stringResponse.setupSoundsForResponse()
+#clickSound, badKeySound = stringResponse.setupSoundsForResponse()
 
 screenshot= False; screenshotDone = False
 stimList = []
@@ -691,7 +707,7 @@ def handleAndScoreResponse(passThisTrial,response,responseAutopilot,task,stimSeq
     idx = correctAnswerIdx
     print('correctAnswerIdx = ',correctAnswerIdx) 
     correctAnswer = wordList[idx].upper()
-    responseString= ''.join(['%s' % char for char in response])
+    responseString=response
     responseString= responseString.upper()
     #print('correctAnswer=',correctAnswer ,' responseString=',responseString)
     if correctAnswer == responseString:
@@ -814,9 +830,8 @@ if doStaircase:
         cuesSerialPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                         do_RSVP_stim(thisTrial, cues, preCues, idxsStream1, idxsStream2, noisePercent/100.,staircaseTrialN)
         numCasesInterframeLong = timingCheckAndLog(ts,staircaseTrialN)
-        expStop,passThisTrial,responses,responsesAutopilot = \
-                stringResponse.collectStringResponse(numRespsWanted,respPromptStim,respStim,acceptTextStim,myWin,clickSound,badKeySound,
-                                                                               requireAcceptance,autopilot,changeToUpper,responseDebug=True)
+        expStop,passThisTrial,responses,buttons,responsesAutopilot = \
+                letterLineupResponse.doLineup(myWin,bgColor,myMouse,clickSound,badKeySound,possibleResps,showBothSides,sideFirstLeftRightCentral,autopilot) #CAN'T YET HANDLE MORE THAN 2 LINEUPS
 
         if not expStop:
             if mainStaircaseGoing:
@@ -891,18 +906,24 @@ else: #not staircase
         print('correctAnswerIdxsStream1=',correctAnswerIdxsStream1,'correctAnswerIdxsStream2=',correctAnswerIdxsStream2)
         numCasesInterframeLong = timingCheckAndLog(ts,nDoneMain)
         #call for each response
+        myMouse = event.Mouse()
+        alphabet = list(string.ascii_lowercase)
+        possibleResps = alphabet #possibleResps.remove('C'); possibleResps.remove('V')
+
         expStop = list(); passThisTrial = list(); responses=list(); responsesAutopilot=list()
-        numCharsInResponse = len(wordList[0])
         dL = [None]*numRespsWanted #dummy list for null values
         expStop = copy.deepcopy(dL); responses = copy.deepcopy(dL); responsesAutopilot = copy.deepcopy(dL); passThisTrial=copy.deepcopy(dL)
         responseOrder = range(numRespsWanted)
+        showBothSides=True
+        sideFirstLeftRightCentral = 0
         if thisTrial['rightResponseFirst']: #change order of indices depending on rightResponseFirst. response0, answer0 etc refer to which one had to be reported first
                 responseOrder.reverse()
-        for i in responseOrder:
-            x = 1.5* thisTrial['wordEccentricity']*(i*2-1) #put it 3 times farther out than stimulus, so participant is sure which is left and which right
-            expStop[i],passThisTrial[i],responses[i],responsesAutopilot[i] = stringResponse.collectStringResponse(
-                                      numCharsInResponse,x,respPromptStim,respStim,acceptTextStim,fixationPoint,myWin,clickSound,badKeySound,
-                                                                                   requireAcceptance,autopilot,changeToUpper,responseDebug=True)                                                                               
+                
+        
+        expStop,passThisTrial,responses,buttons,responsesAutopilot = \
+              letterLineupResponse.doLineup(myWin,bgColor,myMouse,clickSound,badKeySound,possibleResps,showBothSides,sideFirstLeftRightCentral,autopilot) #CAN'T YET HANDLE MORE THAN 2 LINEUPS
+        print('Now')
+        print(responses)
         expStop = np.array(expStop).any(); passThisTrial = np.array(passThisTrial).any()
         if not expStop:
             print('main\t', end='', file=dataFile) #first thing printed on each line of dataFile to indicate main part of experiment, not staircase
@@ -919,7 +940,7 @@ else: #not staircase
                 else: sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
 
                 correct,approxCorrect,responsePosRelative = (
-                        handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot[i],task,sequenceStream,thisTrial['cueSerialPos'],correctAnswerIdxs[i] ) )
+                        handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot,task,sequenceStream,thisTrial['cueSerialPos'],correctAnswerIdxs[i] ) )
                 eachCorrect[i] = correct
                 eachApproxCorrect[i] = approxCorrect
             #header then had seq1, seq2. Save them.
