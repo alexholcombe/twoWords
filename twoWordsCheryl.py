@@ -26,6 +26,7 @@ tasks=['T1']; task = tasks[0]
 #THINGS THAT COULD PREVENT SUCCESS ON A NEW MACHINE
 #same screen or external screen? Set scrn=0 if one screen. scrn=1 means display stimulus on second screen.
 #widthPix, heightPix
+
 quitFinder = False #if checkRefreshEtc, quitFinder becomes True.
 autopilot=False
 demo=False #False
@@ -60,15 +61,17 @@ for i in range(len(wordList)):
 if len(wordList) > numWordsInStream:
     print("WARNING: you have asked for streams that have more stimuli than are in the wordList, so some will be duplicated")
 #Later on, a list of indices into this list will be randomly permuted for each trial
+print(wordList)
+print(len(wordList))
 
 bgColor = [-.7,-.7,-.7] # [-1,-1,-1]
 cueColor = [1.,1.,1.]
 letterColor = [1.,1.,1.]
 cueRadius = 3 #6 deg in Goodbourn & Holcombe
-widthPix= 1280 #monitor width in pixels of Agosta
-heightPix= 800 #800 #monitor height in pixels
-monitorwidth = 38.7 #monitor width in cm
-scrn=0 #0 to use main screen, 1 to use external screen connected to computer
+widthPix= 1920 #1280 #monitor width in pixels of Agosta
+heightPix= 1080 #800 #monitor height in pixels
+monitorwidth = 52.2 #38.7 #monitor width in cm
+scrn=1 #0 to use main screen, 1 to use external screen connected to computer
 fullscr=True #True to use fullscreen, False to not. Timing probably won't be quite right if fullscreen = False
 allowGUI = False
 if demo: monitorwidth = 23#18.0
@@ -120,9 +123,9 @@ if quitFinder:
     os.system(shellCmd)
 
 #letter size 2.5 deg
-SOAms = 600 # 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
+SOAms = 400 # 100 # 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
 #Minimum SOAms should be 84  because any shorter, I can't always notice the second ring when lag1.   71 in Martini E2 and E1b (actually he used 66.6 but that's because he had a crazy refresh rate of 90 Hz)
-letterDurMs = 300 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
+letterDurMs = 80 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
 
 ISIms = SOAms - letterDurMs
 letterDurFrames = int( np.floor(letterDurMs / (1000./refreshRate)) )
@@ -188,7 +191,7 @@ else: #checkRefreshEtc
 myWin.close() #have to close window to show dialog box
 
 defaultNoiseLevel = 0.0 #to use if no staircase, can be set by user
-trialsPerCondition = 1 #default value
+trialsPerCondition = 10 #default value
 dlgLabelsOrdered = list()
 if doStaircase:
     myDlg = gui.Dlg(title="Staircase to find appropriate noisePercent", pos=(200,400))
@@ -209,7 +212,7 @@ else:
     dlgLabelsOrdered.append('defaultNoiseLevel')
     myDlg.addField('Trials per condition (default=' + str(trialsPerCondition) + '):', trialsPerCondition, tip=str(trialsPerCondition))
     dlgLabelsOrdered.append('trialsPerCondition')
-    pctCompletedBreak = 50
+    pctCompletedBreak = 20
     
 myDlg.addText(refreshMsg1, color='Black')
 if refreshRateWrong:
@@ -346,30 +349,39 @@ def findLtrInList(letter,wordList):
     return idx
     
 def calcSequenceForThisTrial():
-    idxsIntoWordList = np.arange( len(wordList) ) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
+    print("lenWordlist",len(wordList))
+    idxsIntoWordList = range(len(wordList)) #create a list of indexes of the entire word list: 0,1,2,3,4,5,...23
+    print("idxsInto",idxsIntoWordList)
     readFromFile = False
     if readFromFile:
         #read in the file of list of bigrams. Doesn't work because  too hard to find enough non-word bigrams for which letters not repeated in either stream
         firstLetters, secondLetters = readFileAndScramble(numWordsInStream)
         #Now must determine what indexes into the wordList (list of letters pre-drawn) correspond to these
         idxsStream1 = list()
+        print("idxsStream1FirstTime",idxsStream1)
         idxsStream2 = list()
+        print("idxsStream2FirstTime",idxsStream2)
         for ltri in range(numWordsInStream): #Find where in the "wordList" each letter is, add it to idxsStream1
             letter = firstLetters[ltri]
             idx = findLtrInList(letter, wordList)
             idxsStream1.append(idx)
+            print("idxsStream1SecondTime",idxsStream1)
         #print("final idxsStream1=",idxsStream1)
         for ltri in range(numWordsInStream): #Find where in the "wordList" each letter is, add it to idxsStream1
             letter = secondLetters[ltri]
             idx = findLtrInList(letter, wordList)
             idxsStream2.append(idx)
+            print("idxsStream2SecondTime",idxsStream2)
     else: #if not readFromFile: #just create a shuffled index of all the possibilities
         np.random.shuffle(idxsIntoWordList) #0,1,2,3,4,5,... -> randomly permuted 3,2,5,...
+        print("idxsintoWordList",idxsIntoWordList)
         idxsStream1 = copy.deepcopy(idxsIntoWordList) #first RSVP stream
         idxsStream1= idxsStream1[:numWordsInStream] #take the first numWordsInStream of the shuffled list
         idxsStream2 = copy.deepcopy(idxsIntoWordList)  #make a copy for the right stream, and permute them on the next list
         np.random.shuffle(idxsStream2)
         idxsStream2= idxsStream2[:numWordsInStream]  #take the first numWordsInStream of the shuffled list
+        print("idxsStream1",idxsStream1)
+        print("idxsStream2",idxsStream2)
     return idxsStream1, idxsStream2
     
 textStimuliStream1 = list()
@@ -901,6 +913,7 @@ else: #not staircase
         sequenceStream1, sequenceStream2, cues, preCues = calcAndPredrawStimuli(wordList,cues,preCues, thisTrial)
         print('sequenceStream1=',sequenceStream1)
         print('sequenceStream2=',sequenceStream2)
+        myWin.setMouseVisible(False)
         cuesSerialPos,correctAnswerIdxsStream1,correctAnswerIdxsStream2, ts  = \
                                                                     do_RSVP_stim(thisTrial, cues, preCues, sequenceStream1, sequenceStream2, noisePercent/100.,nDoneMain)
         print('correctAnswerIdxsStream1=',correctAnswerIdxsStream1,'correctAnswerIdxsStream2=',correctAnswerIdxsStream2)
@@ -937,10 +950,10 @@ else: #not staircase
                 else: sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
 
                 correct,approxCorrect,responsePosRelative = (
-                        handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot,task,sequenceStream,thisTrial['cueSerialPos'],correctAnswerIdxs[i] ) )
+                handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot,task,sequenceStream,thisTrial['cueSerialPos'],correctAnswerIdxs[i] ) )
                 eachCorrect[i] = correct
                 eachApproxCorrect[i] = approxCorrect
-            #header then had seq1, seq2. Save them.
+            #header then had seq1, seq2. Save them
             print(sequenceStream1,'\t',sequenceStream2,'\t', end='', file=dataFile) #print the indexes into the wordList
             print(numCasesInterframeLong, file=dataFile) #timingBlips, last thing recorded on each line of dataFile
             print('correct=',correct,' approxCorrect=',approxCorrect,' eachCorrect=',eachCorrect, ' responsePosRelative=', responsePosRelative)
