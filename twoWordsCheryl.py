@@ -123,7 +123,7 @@ if quitFinder:
     os.system(shellCmd)
 
 #letter size 2.5 deg
-SOAms = 400 # 100 # 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
+SOAms = 100 # 133 #Battelli, Agosta, Goodbourn, Holcombe mostly using 133
 #Minimum SOAms should be 84  because any shorter, I can't always notice the second ring when lag1.   71 in Martini E2 and E1b (actually he used 66.6 but that's because he had a crazy refresh rate of 90 Hz)
 letterDurMs = 80 #23.6  in Martini E2 and E1b (actually he used 22.2 but that's because he had a crazy refresh rate of 90 Hz)
 
@@ -778,7 +778,58 @@ def play_high_tone_correct_low_incorrect(correct, passThisTrial=False):
     else: #incorrect
         low.play()
 
-changeToUpper = False #Chery's experimnet
+def instructions():
+    instrcolor = 'white'
+    preInstructions = visual.TextStim(myWin, text = "Press a key to see the instructions",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions1 = visual.TextStim(myWin, text = "Instructions",pos=(0, .8),colorSpace='rgb',color=(0,0,0),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions2 = visual.TextStim(myWin, text = "Please rest your eyes on the red dot at all times",pos=(0, -.2),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions3 = visual.TextStim(myWin, text = "Press Space to Continue",pos=(0, -.9), colorSpace='rgb',color=(0,0,0),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions4b = visual.TextStim(myWin, text = "On each trial, two letter streams will be presented with each letter flashing for a fraction of a second.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions5b = visual.TextStim(myWin, text = "Two letters will be targeted with white circle on each trial. Try to remember these letters.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )        
+    Instructions6 = visual.TextStim(myWin, text = "After the letter streams, you will need to select the letters you just saw by clicking the letter on the screen. \nSome of the trials will require you to choose the left letter first \nOthers will require you to choose the right one first.", pos=(0,0), colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions7 = visual.TextStim(myWin, text = "Press a key to begin the experiment",pos=(0, 0), colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions9 = visual.TextStim(myWin, text = "If you have any questions, ask the experimentor now.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions10 = visual.TextStim(myWin, text = "If you don't know the letter, you can guess.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+
+    preInstructions.draw()
+    myWin.flip()
+    event.waitKeys()
+    Instructions1.draw()
+    Instructions2.draw()
+    Instructions3.draw()
+    fixationPoint.draw()
+    myWin.flip()
+    event.waitKeys()
+    Instructions1.draw()
+    Instructions4b.draw()
+    Instructions3.draw()
+    myWin.flip()
+    event.waitKeys()
+    Instructions1.draw()
+    Instructions5b.draw()
+    Instructions3.draw()
+    myWin.flip()
+    event.waitKeys()
+    Instructions1.draw()
+    Instructions6.draw()
+    Instructions3.draw()
+    myWin.flip()
+    event.waitKeys()
+    Instructions1.draw()
+    Instructions3.draw()
+    Instructions10.draw()
+    myWin.flip()
+    event.waitKeys()
+    Instructions1.draw()
+    Instructions9.draw()
+    Instructions3.draw()
+    myWin.flip()
+    event.waitKeys()
+    Instructions7.draw()
+    myWin.flip()
+    event.waitKeys()
+
+changeToUpper = False #Chery's experiment
 expStop=False
 nDoneMain = -1 #change to zero once start main part of experiment
 if doStaircase:
@@ -909,6 +960,7 @@ else: #not staircase
         if nDoneMain==0:
             msg='Starting main (non-staircase) part of experiment'
             logging.info(msg); print(msg)
+            instructions()
         thisTrial = trials.next() #get a proper (non-staircase) trial
         sequenceStream1, sequenceStream2, cues, preCues = calcAndPredrawStimuli(wordList,cues,preCues, thisTrial)
         print('sequenceStream1=',sequenceStream1)
@@ -930,7 +982,7 @@ else: #not staircase
         showBothSides=True
         sideFirstLeftRightCentral = thisTrial['rightResponseFirst']
         #if thisTrial['rightResponseFirst']: #change order of indices depending on rightResponseFirst. response0, answer0 etc refer to which one had to be reported first
-        #        responseOrder.reverse()  #this is necessary if using text input rather than lineup response
+                #responseOrder.reverse()  #this is necessary if using text input rather than lineup response
                 
         expStop,passThisTrial,responses,buttons,responsesAutopilot = \
               letterLineupResponse.doLineup(myWin,bgColor,myMouse,clickSound,badKeySound,possibleResps,showBothSides,sideFirstLeftRightCentral,autopilot) #CAN'T YET HANDLE MORE THAN 2 LINEUPS
@@ -945,10 +997,14 @@ else: #not staircase
             i = 0
             eachCorrect = np.ones(numRespsWanted)*-999; eachApproxCorrect = np.ones(numRespsWanted)*-999
             for i in range(numRespsWanted): #scored and printed to dataFile in left first, right second order even if collected in different order
-                if i==0:
-                    sequenceStream = sequenceStream1; correctAnswerIdxs = correctAnswerIdxsStream1; 
-                else: sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
-
+                if thisTrial['rightResponseFirst']:
+                    if i==0:
+                        sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
+                    else: sequenceStream = sequenceStream1; correctAnswerIdxs = correctAnswerIdxsStream1; 
+                else: 
+                    if i==0:
+                        sequenceStream = sequenceStream1; correctAnswerIdxs = correctAnswerIdxsStream1; 
+                    else: sequenceStream = sequenceStream2; correctAnswerIdxs = correctAnswerIdxsStream2; 
                 correct,approxCorrect,responsePosRelative = (
                 handleAndScoreResponse(passThisTrial,responses[i],responsesAutopilot,task,sequenceStream,thisTrial['cueSerialPos'],correctAnswerIdxs[i] ) )
                 eachCorrect[i] = correct
@@ -962,13 +1018,18 @@ else: #not staircase
             numTrialsEachCorrect += eachCorrect #list numRespsWanted long
             numTrialsEachApproxCorrect += eachApproxCorrect #list numRespsWanted long
                 
+            if(sum(eachCorrect)==2):
+                allCorrect=True
+            else:
+                allCorrect=False
+            
             if exportImages:  #catches one frame of response
                  myWin.getMovieFrame() #I cant explain why another getMovieFrame, and core.wait is needed
                  framesSaved +=1; core.wait(.1)
                  myWin.saveMovieFrames('images_sounds_movies/frames.png') #mov not currently supported 
                  expStop=True
             core.wait(.1)
-            if feedback: play_high_tone_correct_low_incorrect(correct, passThisTrial=False)
+            if feedback: play_high_tone_correct_low_incorrect(allCorrect, passThisTrial=False)
             nDoneMain+=1
             
             dataFile.flush(); logging.flush()
