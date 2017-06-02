@@ -7,7 +7,7 @@ import numpy as np
 from math import atan, log, ceil
 from copy import deepcopy
 import copy
-import time, sys, os, pylab, random, string
+import time, sys, os, pylab, random, string  
 try:
     from noiseStaircaseHelpers import printStaircase, toStaircase, outOfStaircase, createNoise, plotDataAndPsychometricCurve
 except ImportError:
@@ -41,11 +41,11 @@ else:
 timeAndDateStr = time.strftime("%d%b%Y_%H-%M", time.localtime())
 
 showRefreshMisses=True #flicker fixation at refresh rate, to visualize if frames missed
-feedback=True
+feedback=False
 autoLogging=False
-refreshRate = 60.;  #100
+refreshRate = 60;  #100
 if demo:
-    refreshRate = 60.;  #100
+    refreshRate = 60;  #100
 
 staircaseTrials = 25
 prefaceStaircaseTrialsN = 20 #22
@@ -68,9 +68,9 @@ bgColor = [-.7,-.7,-.7] # [-1,-1,-1]
 cueColor = [1.,1.,1.]
 letterColor = [1.,1.,1.]
 cueRadius = 3 #6 deg in Goodbourn & Holcombe
-widthPix= 1920 #1280 #monitor width in pixels of Agosta
-heightPix= 1080 #800 #monitor height in pixels
-monitorwidth = 52.2 #38.7 #monitor width in cm
+widthPix= 1024 #1280 #monitor width in pixels of Agosta
+heightPix= 768 #800 #monitor height in pixels
+monitorwidth = 30.4 #52.2 #38.7 #monitor width in cm
 scrn=1 #0 to use main screen, 1 to use external screen connected to computer
 fullscr=True #True to use fullscreen, False to not. Timing probably won't be quite right if fullscreen = False
 allowGUI = False
@@ -85,7 +85,7 @@ if demo:
     widthPix = 800; heightPix = 600
     monitorname='testMonitor'
     allowGUI = True
-viewdist = 57. #cm
+viewdist = 57 #cm
 pixelperdegree = widthPix/ (atan(monitorwidth/viewdist) /np.pi*180)
 print('pixelperdegree=',pixelperdegree)
     
@@ -455,7 +455,7 @@ stimList = []
 cueSerialPositions = np.array([7,9,11,13,15])
 for cueSerialPos in cueSerialPositions:
    for rightResponseFirst in [False,True]:
-      for wordEcc in [0.8,6]:
+      for wordEcc in [1,6]:
         stimList.append( {'cueSerialPos':cueSerialPos, 'rightResponseFirst':rightResponseFirst,
                                     'leftStreamFlip':False, 'rightStreamFlip':False,
                                      'wordEccentricity':wordEcc } )
@@ -503,7 +503,7 @@ def wordToIdx(word,wordList, responseMustBeInWordList):
         return (None)
         
 #print header for data file
-print('experimentPhase\ttrialnum\tsubject\ttask\t',file=dataFile,end='')
+print('experimentPhase\ttrialnum\tsubject\ttask\twordEcc\t',file=dataFile,end='')
 print('noisePercent\tleftStreamFlip\trightStreamFlip\t',end='',file=dataFile)
 if task=='T1':
     numRespsWanted = 2
@@ -785,10 +785,10 @@ def instructions():
     Instructions2 = visual.TextStim(myWin, text = "Please rest your eyes on the red dot at all times",pos=(0, -.2),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
     Instructions3 = visual.TextStim(myWin, text = "Press Space to Continue",pos=(0, -.9), colorSpace='rgb',color=(0,0,0),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
     Instructions4b = visual.TextStim(myWin, text = "On each trial, two letter streams will be presented with each letter flashing for a fraction of a second.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
-    Instructions5b = visual.TextStim(myWin, text = "Two letters will be targeted with white circle on each trial. Try to remember these letters.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )        
-    Instructions6 = visual.TextStim(myWin, text = "After the letter streams, you will need to select the letters you just saw by clicking the letter on the screen. \nSome of the trials will require you to choose the left letter first \nOthers will require you to choose the right one first.", pos=(0,0), colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions5b = visual.TextStim(myWin, text = "Two letters will be outlined with white circles on each trial. Try to remember these letters.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )        
+    Instructions6 = visual.TextStim(myWin, text = "After the letter streams, you will need to select the letters you just saw by clicking the letters on the screen. \nSome of the trials will require you to choose the left letter first. \nOthers will require you to choose the right one first.", pos=(0,0), colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
     Instructions7 = visual.TextStim(myWin, text = "Press a key to begin the experiment",pos=(0, 0), colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
-    Instructions9 = visual.TextStim(myWin, text = "If you have any questions, ask the experimentor now.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
+    Instructions9 = visual.TextStim(myWin, text = "If you have any questions, ask the experimenter now.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
     Instructions10 = visual.TextStim(myWin, text = "If you don't know the letter, you can guess.",pos=(0, 0),colorSpace='rgb',color=(1,1,1),alignHoriz='center', alignVert='center',height=.1,units='norm',autoLog=autoLogging )
 
     preInstructions.draw()
@@ -908,7 +908,8 @@ if doStaircase:
                                                 passThisTrial,responses,responseAutopilot,task,sequenceLeft,cuesSerialPos[0],correctAnswerIdx )
             #header then had seq1, seq2
             print(idxsStream1,'\t',idxsStream2,'\t', end='', file=dataFile) #print the indexes into the wordList
-            print(numCasesInterframeLong, file=dataFile) #timingBlips, last thing recorded on each line of dataFile
+            print(numCasesInterframeLong, file=dataFile) 
+            print('timingBlips=', numCasesInterframeLong)#timingBlips, last thing recorded on each line of dataFile
             core.wait(.06)
             if feedback: 
                 play_high_tone_correct_low_incorrect(correct, passThisTrial=False)
@@ -988,9 +989,10 @@ else: #not staircase
               letterLineupResponse.doLineup(myWin,bgColor,myMouse,clickSound,badKeySound,possibleResps,showBothSides,sideFirstLeftRightCentral,autopilot) #CAN'T YET HANDLE MORE THAN 2 LINEUPS
         expStop = np.array(expStop).any(); passThisTrial = np.array(passThisTrial).any()
         if not expStop:
+            #data file output start
             print('main\t', end='', file=dataFile) #first thing printed on each line of dataFile to indicate main part of experiment, not staircase
             print(nDoneMain,'\t', end='', file=dataFile)
-            print(subject,'\t',task,'\t', round(noisePercent,3),'\t', end='', file=dataFile)
+            print(subject,'\t',task,'\t', thisTrial['wordEccentricity'], '\t', round(noisePercent,3),'\t', end='', file=dataFile)
             print(thisTrial['leftStreamFlip'],'\t', end='', file=dataFile)
             print(thisTrial['rightStreamFlip'],'\t', end='', file=dataFile)
             print(thisTrial['rightResponseFirst'],'\t', end='', file=dataFile)
