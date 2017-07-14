@@ -1,0 +1,109 @@
+16.3884 	WARNING 	Could not load the desired click sound file, instead using manually created inferior click
+16.3887 	EXP 	Set  sound=D
+16.4747 	EXP 	Set  sound=D
+16.4749 	EXP 	Set  sound=A
+16.4853 	EXP 	Created sequence: random, trialTypes=40, nReps=50, seed=None
+16.5774 	EXP 	Created sequence: random, trialTypes=40, nReps=50, seed=None
+16.5777 	INFO 	numtrials=2000 and each trialDurFrames=77 or 1283.33333333 ms  task=T1
+16.5788 	INFO 	Experiment will have 2000 trials. Letters will be drawn with superposed noise of 0.00%
+16.5788 	INFO 	Starting main (non-staircase) part of experiment
+16.5793 	EXP 	New trial (rep=0, index=0): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'LLHR', 'cuePos': 8}
+18.7524 	EXP 	window1: recordFrameIntervals = False
+18.7833 	ERROR 	trialnum=0 ERROR,1 frames were longer than 21.67 ms apparently screen refreshes skipped, interframe durs were:[ 25.2] and was these frames: [28]
+18.7850 	INFO 	flankers also=[ 17.6  25.2  12.5]
+22.1584 	DATA 	Keypress: h
+22.1703 	EXP 	Sound  started
+22.7037 	DATA 	Keypress: i
+22.7041 	EXP 	Sound  started
+22.8195 	DATA 	Keypress: g
+22.8199 	EXP 	Sound  started
+22.9202 	DATA 	Keypress: h
+22.9206 	EXP 	Sound  started
+23.1448 	DATA 	Keypress: l
+23.1517 	EXP 	Sound  started
+23.3041 	DATA 	Keypress: o
+23.3045 	EXP 	Sound  started
+23.3704 	DATA 	Keypress: w
+23.3707 	EXP 	Sound  started
+24.1207 	DATA 	Keypress: d
+24.1211 	EXP 	Sound  started
+24.1434 	WARNING 	Response was not present in the stimulus stream
+24.2457 	EXP 	Set  sound=G
+24.2461 	EXP 	Set  sound=F
+24.2461 	EXP 	Set Sound  volume=0.900
+24.2461 	EXP 	Set Sound  volume=1.000
+24.2461 	EXP 	Sound  started
+24.6530 	EXP 	New trial (rep=0, index=1): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'LLLR', 'cuePos': 6}
+27.0041 	EXP 	window1: recordFrameIntervals = False
+28.3542 	DATA 	Keypress: l
+28.3544 	EXP 	Sound  started
+28.5381 	DATA 	Keypress: o
+28.5385 	EXP 	Sound  started
+28.6544 	DATA 	Keypress: w
+28.6547 	EXP 	Sound  started
+29.9046 	DATA 	Keypress: l
+29.9050 	EXP 	Sound  started
+30.0714 	DATA 	Keypress: l
+30.0718 	EXP 	Sound  started
+30.5764 	DATA 	Keypress: l
+30.5880 	EXP 	Sound  started
+30.7096 	DATA 	Keypress: l
+30.7219 	EXP 	Sound  started
+30.8550 	DATA 	Keypress: l
+30.8553 	EXP 	Sound  started
+30.8710 	WARNING 	Response was not present in the stimulus stream
+30.8711 	WARNING 	Response was not present in the stimulus stream
+30.9724 	EXP 	Set  sound=G
+30.9729 	EXP 	Set  sound=F
+30.9729 	EXP 	Set Sound  volume=0.900
+30.9729 	EXP 	Set Sound  volume=1.000
+30.9730 	EXP 	Sound  started
+31.0055 	DATA 	Keypress: l
+31.3762 	EXP 	New trial (rep=0, index=2): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'LLLR', 'cuePos': 7}
+33.6408 	DATA 	Keypress: l
+33.6544 	EXP 	window1: recordFrameIntervals = False
+33.6622 	ERROR 	trialnum=2 ERROR,2 frames were longer than 21.67 ms apparently screen refreshes skipped, interframe durs were:[ 42.8  28.9] and was these frames: [31 46]
+33.6626 	INFO 	flankers also=[ 16.   42.8   6.3  16.6  28.9   3.7]
+33.8108 	DATA 	Keypress: l
+33.8223 	EXP 	Sound  started
+34.0055 	DATA 	Keypress: l
+34.0059 	EXP 	Sound  started
+34.1731 	DATA 	Keypress: l
+34.1734 	EXP 	Sound  started
+34.3219 	DATA 	Keypress: l
+34.3223 	EXP 	Sound  started
+34.5056 	DATA 	Keypress: l
+34.5059 	EXP 	Sound  started
+34.7720 	DATA 	Keypress: l
+34.7724 	EXP 	Sound  started
+34.9215 	DATA 	Keypress: l
+34.9218 	EXP 	Sound  started
+35.0884 	DATA 	Keypress: l
+35.0887 	EXP 	Sound  started
+35.1054 	WARNING 	Response was not present in the stimulus stream
+35.1055 	WARNING 	Response was not present in the stimulus stream
+35.2067 	EXP 	Set  sound=G
+35.2071 	EXP 	Set  sound=F
+35.2071 	EXP 	Set Sound  volume=0.900
+35.2071 	EXP 	Set Sound  volume=1.000
+35.2071 	EXP 	Sound  started
+35.2373 	DATA 	Keypress: l
+35.3814 	DATA 	Keypress: l
+35.6109 	EXP 	New trial (rep=0, index=3): {'leftStreamFlip': False, 'rightResponseFirst': False, 'rightStreamFlip': False, 'condition': 'LLLR', 'cuePos': 6}
+35.6816 	DATA 	Keypress: l
+35.7014 	DATA 	Keypress: l
+35.8888 	DATA 	Keypress: l
+36.1061 	DATA 	Keypress: l
+36.3063 	DATA 	Keypress: l
+36.5075 	DATA 	Keypress: l
+37.7722 	EXP 	window1: recordFrameIntervals = False
+39.4054 	DATA 	Keypress: escape
+40.1885 	DATA 	Keypress: escape
+40.2060 	INFO 	Finishing at 11:10 on 21 May 2015
+40.2060 	ERROR 	user aborted experiment on keypress with trials done=3 of 2001
+40.2060 	INFO 	Of 3 trials, on 0.0% of all trials all targets reported exactly correct
+40.2061 	INFO 	All targets approximately correct in 0.0% of trials
+40.2061 	INFO 	stream0: 0.0% correct
+40.2061 	INFO 	stream0: 0.0% approximately correct
+40.2061 	INFO 	stream1: 33.33% correct
+40.2061 	INFO 	stream1: 0.0% approximately correct

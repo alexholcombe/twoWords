@@ -1,0 +1,4 @@
+experimentPhase	trialnum	subject	task	noisePercent	leftStreamFlip	rightStreamFlip	rightResponseFirst	cuePos0	answer0	response0	correct0	responsePosRelative0	cuePos1	answer1	response1	correct1	responsePosRelative1	condition	timingBlips
+main	0 	Hubert 	 T1 	 0.0 	False 	False 	True 	8 	LOW 	LOWD 	0 	-999 	8 	HIGH 	HIGH 	1 	-5 	LLHR 	1
+main	1 	Hubert 	 T1 	 0.0 	False 	False 	True 	6 	LOW 	LLLL 	0 	-999 	6 	LOW 	LOWL 	0 	-999 	LLLR 	0
+main	2 	Hubert 	 T1 	 0.0 	False 	False 	True 	7 	LOW 	LLLL 	0 	-999 	7 	LOW 	LLLL 	0 	-999 	LLLR 	2

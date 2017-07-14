@@ -1,0 +1,185 @@
+8.2575 	WARNING 	Couldn't measure a consistent frame rate.
+  - Is your graphics card set to sync to vertical blank?
+  - Are you running other processes on your computer?
+
+8.2920 	WARNING 	Could not load the desired click sound file, instead using manually created inferior click
+8.2922 	EXP 	Set  sound=D
+8.3862 	EXP 	Set  sound=D
+8.3863 	EXP 	Set  sound=A
+8.3961 	EXP 	Created sequence: random, trialTypes=40, nReps=50, seed=None
+8.4823 	EXP 	Created sequence: random, trialTypes=40, nReps=50, seed=None
+8.4827 	INFO 	numtrials=2000 and each trialDurFrames=77 or 1283.33333333 ms  task=T1
+8.4838 	INFO 	Experiment will have 2000 trials. Letters will be drawn with superposed noise of 0.00%
+8.4838 	INFO 	Starting main (non-staircase) part of experiment
+8.4843 	EXP 	New trial (rep=0, index=0): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'LLLR', 'cuePos': 8}
+8.5562 	WARNING 	t of last frame was 298.90ms (=1/3)
+8.6623 	WARNING 	t of last frame was 102.86ms (=1/9)
+10.5585 	EXP 	window1: recordFrameIntervals = False
+14.7091 	DATA 	Keypress: l
+14.7100 	EXP 	Sound  started
+14.7770 	DATA 	Keypress: j
+14.7772 	EXP 	Sound  started
+14.7977 	DATA 	Keypress: k
+14.8259 	EXP 	Sound  started
+14.9099 	DATA 	Keypress: l
+14.9102 	EXP 	Sound  started
+14.9253 	DATA 	Keypress: k
+14.9662 	DATA 	Keypress: j
+14.9756 	EXP 	Sound  started
+15.5929 	DATA 	Keypress: l
+15.5933 	EXP 	Sound  started
+15.6134 	DATA 	Keypress: k
+15.6263 	EXP 	Sound  started
+15.6762 	DATA 	Keypress: j
+15.6765 	EXP 	Sound  started
+15.6922 	WARNING 	Response was not present in the stimulus stream
+15.6922 	WARNING 	Response was not present in the stimulus stream
+15.7721 	DATA 	Keypress: l
+15.7935 	EXP 	Set  sound=G
+15.7939 	EXP 	Set  sound=F
+15.7940 	EXP 	Set Sound  volume=0.900
+15.7940 	EXP 	Set Sound  volume=1.000
+15.7940 	EXP 	Sound  started
+15.8042 	DATA 	Keypress: k
+15.8200 	DATA 	Keypress: j
+16.1994 	EXP 	New trial (rep=0, index=1): {'leftStreamFlip': False, 'rightResponseFirst': False, 'rightStreamFlip': False, 'condition': 'LLHR', 'cuePos': 10}
+18.6923 	EXP 	window1: recordFrameIntervals = False
+20.3435 	DATA 	Keypress: l
+20.3438 	EXP 	Sound  started
+20.3755 	DATA 	Keypress: k
+20.3757 	EXP 	Sound  started
+20.3989 	DATA 	Keypress: j
+20.4094 	EXP 	Sound  started
+20.5263 	DATA 	Keypress: l
+20.5267 	EXP 	Sound  started
+20.5430 	DATA 	Keypress: k
+20.5766 	DATA 	Keypress: j
+20.5769 	EXP 	Sound  started
+20.6767 	DATA 	Keypress: l
+20.6769 	EXP 	Sound  started
+20.6962 	DATA 	Keypress: k
+20.7104 	EXP 	Sound  started
+20.7481 	DATA 	Keypress: j
+20.7606 	EXP 	Sound  started
+20.7770 	WARNING 	Response was not present in the stimulus stream
+20.7771 	WARNING 	Response was not present in the stimulus stream
+20.8519 	DATA 	Keypress: l
+20.8678 	DATA 	Keypress: k
+20.8784 	EXP 	Set  sound=G
+20.8789 	EXP 	Set  sound=F
+20.8789 	EXP 	Set Sound  volume=0.900
+20.8789 	EXP 	Set Sound  volume=1.000
+20.8790 	EXP 	Sound  started
+20.9240 	DATA 	Keypress: j
+21.0199 	DATA 	Keypress: l
+21.0439 	DATA 	Keypress: k
+21.2827 	EXP 	New trial (rep=0, index=2): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'HLHR', 'cuePos': 6}
+21.3543 	DATA 	Keypress: j
+21.3547 	DATA 	Keypress: l
+21.3549 	DATA 	Keypress: k
+21.3550 	DATA 	Keypress: j
+22.4461 	DATA 	Keypress: l
+22.5298 	DATA 	Keypress: k
+22.5631 	DATA 	Keypress: j
+23.5259 	EXP 	window1: recordFrameIntervals = False
+24.0610 	DATA 	Keypress: l
+24.0614 	EXP 	Sound  started
+24.1159 	DATA 	Keypress: k
+24.1268 	EXP 	Sound  started
+24.1488 	DATA 	Keypress: j
+24.1607 	EXP 	Sound  started
+24.2770 	DATA 	Keypress: l
+24.2774 	EXP 	Sound  started
+24.3095 	DATA 	Keypress: k
+24.3097 	EXP 	Sound  started
+24.3447 	DATA 	Keypress: j
+24.3450 	EXP 	Sound  started
+24.4442 	DATA 	Keypress: l
+24.4446 	EXP 	Sound  started
+24.4771 	DATA 	Keypress: k
+24.4775 	EXP 	Sound  started
+24.4933 	WARNING 	Response was not present in the stimulus stream
+24.4934 	WARNING 	Response was not present in the stimulus stream
+24.5947 	EXP 	Set  sound=G
+24.5951 	EXP 	Set  sound=F
+24.5952 	EXP 	Set Sound  volume=0.900
+24.5952 	EXP 	Set Sound  volume=1.000
+24.5952 	EXP 	Sound  started
+24.6999 	DATA 	Keypress: l
+24.7720 	DATA 	Keypress: k
+24.7877 	DATA 	Keypress: j
+24.9997 	EXP 	New trial (rep=0, index=3): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'LLHR', 'cuePos': 10}
+25.0731 	DATA 	Keypress: l
+27.1768 	EXP 	window1: recordFrameIntervals = False
+27.6941 	DATA 	Keypress: l
+27.6945 	EXP 	Sound  started
+27.7503 	DATA 	Keypress: k
+27.7602 	EXP 	Sound  started
+27.7822 	DATA 	Keypress: j
+27.7940 	EXP 	Sound  started
+27.9111 	DATA 	Keypress: l
+27.9116 	DATA 	Keypress: k
+27.9118 	EXP 	Sound  started
+27.9663 	DATA 	Keypress: j
+27.9774 	EXP 	Sound  started
+28.0780 	DATA 	Keypress: k
+28.0784 	DATA 	Keypress: l
+28.0787 	EXP 	Sound  started
+28.6106 	DATA 	Keypress: l
+28.6109 	EXP 	Sound  started
+28.6156 	DATA 	Keypress: j
+28.6330 	DATA 	Keypress: k
+28.6444 	EXP 	Sound  started
+28.6607 	WARNING 	Response was not present in the stimulus stream
+28.6607 	WARNING 	Response was not present in the stimulus stream
+28.7558 	DATA 	Keypress: l
+28.7619 	EXP 	Set  sound=G
+28.7624 	EXP 	Set  sound=F
+28.7624 	EXP 	Set Sound  volume=0.900
+28.7624 	EXP 	Set Sound  volume=1.000
+28.7624 	EXP 	Sound  started
+28.7797 	DATA 	Keypress: k
+29.1649 	EXP 	New trial (rep=0, index=4): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'LLLR', 'cuePos': 10}
+31.7278 	EXP 	window1: recordFrameIntervals = False
+33.0783 	DATA 	Keypress: l
+33.0787 	EXP 	Sound  started
+33.1453 	DATA 	Keypress: k
+33.1456 	EXP 	Sound  started
+33.1666 	DATA 	Keypress: j
+33.1775 	EXP 	Sound  started
+33.2767 	DATA 	Keypress: l
+33.2770 	EXP 	Sound  started
+33.3109 	DATA 	Keypress: k
+33.3111 	EXP 	Sound  started
+33.3620 	DATA 	Keypress: j
+33.3623 	EXP 	Sound  started
+33.4453 	DATA 	Keypress: l
+33.4457 	EXP 	Sound  started
+33.4671 	DATA 	Keypress: k
+33.4771 	EXP 	Sound  started
+33.4952 	WARNING 	Response was not present in the stimulus stream
+33.4952 	WARNING 	Response was not present in the stimulus stream
+33.5316 	DATA 	Keypress: j
+33.5966 	EXP 	Set  sound=G
+33.5971 	EXP 	Set  sound=F
+33.5971 	EXP 	Set Sound  volume=0.900
+33.5971 	EXP 	Set Sound  volume=1.000
+33.5971 	EXP 	Sound  started
+33.6276 	DATA 	Keypress: l
+33.6437 	DATA 	Keypress: k
+33.7075 	DATA 	Keypress: j
+34.0024 	EXP 	New trial (rep=0, index=5): {'leftStreamFlip': False, 'rightResponseFirst': True, 'rightStreamFlip': False, 'condition': 'LLHR', 'cuePos': 7}
+34.1158 	DATA 	Keypress: k
+34.1161 	DATA 	Keypress: l
+34.1162 	DATA 	Keypress: j
+36.4452 	EXP 	window1: recordFrameIntervals = False
+36.8458 	DATA 	Keypress: escape
+37.2285 	DATA 	Keypress: escape
+37.2457 	INFO 	Finishing at 11:16 on 21 May 2015
+37.2457 	ERROR 	user aborted experiment on keypress with trials done=5 of 2001
+37.2458 	INFO 	Of 5 trials, on 0.0% of all trials all targets reported exactly correct
+37.2458 	INFO 	All targets approximately correct in 0.0% of trials
+37.2458 	INFO 	stream0: 0.0% correct
+37.2459 	INFO 	stream0: 0.0% approximately correct
+37.2459 	INFO 	stream1: 0.0% correct
+37.2459 	INFO 	stream1: 0.0% approximately correct
