@@ -82,5 +82,7 @@ farCorr<- cor.test(far$responsePosRelativeleft, far$responsePosRelativeright,
 #To-do
 #Eliminate the five bad Ss
 #Address the argument that it wasn't correlated in the far just because of more guessing
+#  - Do simulation of same correlation but with more guesses to make sure it is still significant despite the differing guessing rates
 #Calculate for each subject and then do a t-test for near and far
+#Analyse the frequent bigrams and actual words separately.
 
