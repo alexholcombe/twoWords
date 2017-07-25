@@ -6,25 +6,20 @@ path <- file.path(directoryOfRawData)
 
 filePaths<- list.files(path, pattern="*.txt")
 
-i=1
-rawFileToImport<- file.path(path, filePaths[i])
-
-dataThisSubject<- read.table(rawFileToImport, header=TRUE)
-
-df <- rbind(df,dataThisSubject) #Add subjects data to main dataFrame
-
 df<-data.frame()
 for (fileName in filePaths) #Loop through and read in each Cheryl-prepared data file
 {
   rawFileToImport<- file.path(path, fileName)
+  #read the file into your dataframe dataThisSubject
   dataThisSubject<- read.table(rawFileToImport, header=TRUE)
-  dataThisSubject$filename<- fileName
+  dataThisSubject$filename<- fileName #don't forget which file it came from when you lump them all together into df
+  #add it to the dataframe which you'll bang all the Ss into, df
   df <- rbind(df,dataThisSubject) #Add subjects data to main dataFrame
 }
 
 library(ggplot2)
 
-#sanity check
+#sanity check the histogram
 g=ggplot(df,   aes(x=responsePosRelativeright))  
 g<-g+facet_grid(wordEcc~.)  +geom_histogram(bin_width=1)
 g #looks good
@@ -32,10 +27,10 @@ g #looks good
 library(dplyr)
 #Error #library(devtools); install_github("ggplot2", "hadley", "develop") #to get latest version of ggplot2 that has viridis color palette
 
-#ggplot will accumulate data automatically to make a histogram, will it not accumulate to make a heatPlot?
-
+#calculate the frequency of every combination of each left and right SPE
 dCount<- df %>% count(wordEcc,responsePosRelativeleft, responsePosRelativeright)
 
+#plot that contingency table
 correl<- ggplot(dCount, aes(x = responsePosRelativeleft, y = responsePosRelativeright)) + geom_tile(aes(fill = n)) +  facet_grid(wordEcc~.)
 correl<- correl+theme_bw()
 correl + scale_colour_brewer
@@ -81,6 +76,9 @@ farCorr<- cor.test(far$responsePosRelativeleft, far$responsePosRelativeright,
 
 #To-do
 #Eliminate the five bad Ss
+#Do the correlation analysis on each S individually, and then do paired t-tests on the subject means 
+
+#ADVANCED
 #Address the argument that it wasn't correlated in the far just because of more guessing
 #  - Do simulation of same correlation but with more guesses to make sure it is still significant despite the differing guessing rates
 #Calculate for each subject and then do a t-test for near and far
