@@ -45,11 +45,11 @@ correl<-correl + scale_fill_gradient(low="black", high="white")
 show(correl)
 
 #Zero in on center because most large SPEs are guesses
-minSPE<--3
-maxSPE<- 3
+minSPE<--2
+maxSPE<- 2
 correl +  xlim(minSPE,maxSPE) + ylim(minSPE,maxSPE)
 
-#scales free
+#scales free.This doesn't work.
 correl + facet_grid(wordEcc~., scales="free")  +  xlim(minSPE,maxSPE) + ylim(minSPE,maxSPE)
 
 #Calculate correlation
@@ -58,7 +58,7 @@ cor.test(df$responsePosRelativeleft, df$responsePosRelativeright,
          method = c("pearson"),
          exact = NULL, conf.level = 0.95, continuity = FALSE)
 
-smallSPEs <- df %>% filter(abs(responsePosRelativeleft) <= 3 ) %>% filter( abs(responsePosRelativeright) <= 3 )
+smallSPEs <- df %>% filter(abs(responsePosRelativeleft) < maxSPE ) %>% filter( abs(responsePosRelativeright) < maxSPE )
 
 #ddply(smallSPEs, .(wordEcc), 
 near<- smallSPEs %>% filter( wordEcc==1 )
